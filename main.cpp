@@ -1,9 +1,9 @@
 /*Much of the code in this file was originally from Lazy Foo' Productions
 (http://lazyfoo.net/)*/
-
 #include "globals.h"
 #include "Player.h"
 #include "GameLogic.h"
+#include <vector>
 //Starts up SDL and creates window
 bool init();
 
@@ -224,7 +224,12 @@ int main(int argc, char* args[])
 			bool quit = false;
 			int state = STATE_GAMEPLAY;
 			Player p = Player(100, 100, 0);
-			
+			std::vector<Player> others;
+			if (argc > 2)
+			{
+				
+				others.push_back(Player(100,100,0));	
+			}
 			
 			glLoadIdentity();
 			glTranslated(-1, 1, 0);

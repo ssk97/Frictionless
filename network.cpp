@@ -10,7 +10,7 @@ int server()
     if (socket == NULL)
     {
 	printf("Could not open socket.");
-	return -1;	
+	throw 8;
     }
     UDPpacket* packet = SDLNet_AllocPacket(PACKET_SIZE);
     int quit = 0;
