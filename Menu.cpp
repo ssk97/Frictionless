@@ -48,6 +48,7 @@ void draw_char(double x, double y, char c) {
     if (c >= '0' && c <= '9') id = c - '0';
     if (c >= 'A' && c <= 'Z') id = c - 'A' + 10;
     if (c >= 'a' && c <= 'z') id = c - 'a' + 10;
+    if (c == '.') id = 80;
     if (id != -1) {
         double charx = (id % 9)*texw;
         double chary = (id / 9)*texh;
@@ -81,7 +82,7 @@ void draw_text(double x, double y, char* arr) {
 bool bbox(double x, double y, double x1, double y1, double w, double h) {
     return ((x >= x1 && x <= x1 + w) && (y >= y1 && y <= y1 + h));
 }
-int Menu::step(Sint32 mouseX, Sint32 mouseY, bool clicked){//returns mode if changed, 0 if no change
+int Menu::step(Sint32 mouseX, Sint32 mouseY, bool clicked, const Uint8 *keyboard, SDL_Scancode keypressed){//returns mode if changed, 0 if no change
     switch (substate) {
         case s_main:
             if (clicked) {
@@ -97,8 +98,53 @@ int Menu::step(Sint32 mouseX, Sint32 mouseY, bool clicked){//returns mode if cha
             }
             break;
         case s_clientIP:
-            //if (tmpip)
-            return M_CLIENT;
+            if (ippos > 20) ippos = 20;
+            if (keypressed == SDL_SCANCODE_0) {
+                tmpip[ippos++] = '0';
+            }
+            else if (keypressed == SDL_SCANCODE_1) {
+                tmpip[ippos++] = '1';
+            }
+            else if (keypressed == SDL_SCANCODE_2) {
+                tmpip[ippos++] = '2';
+            }
+            else if (keypressed == SDL_SCANCODE_3) {
+                tmpip[ippos++] = '3';
+            }
+            else if (keypressed == SDL_SCANCODE_4) {
+                tmpip[ippos++] = '4';
+            }
+            else if (keypressed == SDL_SCANCODE_5) {
+                tmpip[ippos++] = '5';
+            }
+            else if (keypressed == SDL_SCANCODE_6) {
+                tmpip[ippos++] = '6';
+            }
+            else if (keypressed == SDL_SCANCODE_7) {
+                tmpip[ippos++] = '7';
+            }
+            else if (keypressed == SDL_SCANCODE_8) {
+                tmpip[ippos++] = '8';
+            }
+            else if (keypressed == SDL_SCANCODE_9) {
+                tmpip[ippos++] = '9';
+            }
+            else if (keypressed == SDL_SCANCODE_0) {
+                tmpip[ippos++] = '0';
+            }
+            else if (keypressed == SDL_SCANCODE_PERIOD) {
+                tmpip[ippos++] = '.';
+            }
+            else if (keypressed == SDL_SCANCODE_BACKSPACE) {
+                if (ippos > 0) {
+                    tmpip[--ippos] = 0;
+                }
+            }
+            std::cout << tmpip << "\n";
+            if (keypressed == SDL_SCANCODE_RETURN) {
+                return M_CLIENT;
+            }
+            break;
     }
     return 0;
 }
@@ -137,5 +183,8 @@ void Menu::draw(Sint32 mouseX, Sint32 mouseY) {
             draw_round_rect(100, 500, w * 11, h, mouseX, mouseY);
             draw_text(100, 500, "Server Game");
             break;
+        case s_clientIP:
+            draw_text(100, 300, "IP address:");
+            draw_text(100, 400, tmpip);
     }
 }
