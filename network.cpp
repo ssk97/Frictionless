@@ -11,7 +11,7 @@ UDPpacket* write_packet;
 IPaddress addr;
 
 
-int server_stop()
+void server_stop()
 {
     SDLNet_UDP_Close(socket);
     SDLNet_FreePacket(read_packet);
