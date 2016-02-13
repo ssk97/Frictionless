@@ -243,6 +243,8 @@ int main(int argc, char* args[])
 						quit = true;
 					}
 				}
+				if (keyboard[SDL_SCANCODE_ESCAPE])
+					quit = true;
 				switch (state) {
 					case STATE_MENU: 
 						break;
@@ -250,7 +252,7 @@ int main(int argc, char* args[])
 						p->input(keyboard[SDL_SCANCODE_RIGHT], keyboard[SDL_SCANCODE_LEFT], keyboard[SDL_SCANCODE_UP]);
 						p->step();
 						//Clear screen
-						glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+						glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 						glClear(GL_COLOR_BUFFER_BIT);
 						p->draw();
 						break;

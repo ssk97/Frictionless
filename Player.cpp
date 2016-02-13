@@ -36,13 +36,28 @@ void Player::draw()
 	glPushMatrix();
 	glTranslated(x, y, 0);
 	glRotated(angle, 0, 0, 1);
-	glColor3f(0.0f, 0.0f, 1.0f); //blue color
+
+	glColor3f(0.0f, 1.0f, 0.0f); //green color
 	glBegin(GL_TRIANGLE_STRIP);
 		glVertex2f(-10, -20);
 		glVertex2f(0, 0);
 		glVertex2f(0, 20);
 		glVertex2f(10, -20);
 	glEnd();//ship
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	glBegin(GL_TRIANGLE_FAN);
+	glColor3f(0.0f, 0.0f, 0.0f); //black color
+	glVertex2f(0, 0);
+	glColor3f(0.0f, 0.0f, 1.0f); //blue color
+	for (int i = 0; i <= 36; i++) {
+		glVertex2f(xdir(i * 10, 20), ydir(i * 10, 20));
+	}
+	glEnd();//ship
+	glDisable(GL_BLEND);
+
+
 	glPopMatrix();
 }
 
