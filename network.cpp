@@ -88,7 +88,7 @@ int receive_packets(void* gameLogic)
         for (auto &p : g->others)
         {
 	    //Todo: Allow multiple other players
-	    p.x = data->x; p.y = data->y; p.xspd = data->xspd; p.yspd = data->yspd; p.angle = data->angle; p.aspd = data->aspd;
+	    p.x = data->x; p.y = data->y; p.xspd = data->xspd; p.yspd = data->yspd; p.angle = data->angle; p.aspd = data->aspd; p.left_btn = data->left_prev; p.right_btn = data->right_prev; p.up_btn = data->up_prev;
         }
         SDL_UnlockMutex(g->write_other_players);
     }
@@ -97,7 +97,7 @@ int receive_packets(void* gameLogic)
 
 void send_packet(ActivePlayer* play)
 {
-    struct data_sent data = {play->x, play->y, play->xspd, play->yspd, play->angle, play->aspd, play->left_prev, play->right_prev, play->up_prev};
+    struct data_sent data = {play->x, play->y, play->xspd, play->yspd, play->angle, play->aspd, play->left_btn, play->right_btn, play->up_btn};
     write_packet->data = (Uint8*) &data;
     write_packet->len = 80;
     printf("Size of data: %i", sizeof(struct data_sent));

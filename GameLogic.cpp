@@ -10,7 +10,9 @@ GameLogic::~GameLogic()
 }
 void GameLogic::step(const Uint8 *keyboard)
 {
-    player.input(keyboard[SDL_SCANCODE_RIGHT], keyboard[SDL_SCANCODE_LEFT], keyboard[SDL_SCANCODE_UP]);
+    player.right_btn = keyboard[SDL_SCANCODE_RIGHT];
+    player.left_btn = keyboard[SDL_SCANCODE_LEFT];
+    player.up_btn = keyboard[SDL_SCANCODE_UP];
     player.step();
     rings.step(player.x, player.y);
     SDL_LockMutex(write_other_players);

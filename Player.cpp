@@ -10,6 +10,19 @@ Player::Player(double x2, double y2, double angle2)
 
 void Player::step()
 {
+    if (right_btn)
+	aspd += .15;
+    if (left_btn)
+	aspd -= .15;
+    if (up_btn) {
+	xspd += xdir(angle, .05);
+	yspd += ydir(angle, .05);
+	myExhaust.add(x, y, xdir(angle,-5)+xspd, ydir(angle, -5)+yspd);
+	myExhaust.add(x, y, xdir(angle+4, -4.8) + xspd, ydir(angle+4, -4.8) + yspd);
+	myExhaust.add(x, y, xdir(angle+4, -5.2) + xspd, ydir(angle+4, -5.2) + yspd);
+	myExhaust.add(x, y, xdir(angle - 4, -4.8) + xspd, ydir(angle - 4, -4.8) + yspd);
+	myExhaust.add(x, y, xdir(angle - 4, -5.2) + xspd, ydir(angle - 4, -5.2) + yspd);
+    }        
     x += xspd;
     y += yspd;
     angle += aspd;
@@ -21,6 +34,7 @@ void Player::step()
         y -= yspd;
         yspd *= -1;
     }
+
     myExhaust.step();
 }
 void Player::draw()
@@ -65,26 +79,6 @@ void Player::draw()
 
 Player::~Player()
 {
-}
-
-void ActivePlayer::input(bool right, bool left, bool up)
-{
-    if (right)
-    aspd += .15;
-    if (left)
-    aspd -= .15;
-    if (up) {
-    xspd += xdir(angle, .05);
-    yspd += ydir(angle, .05);
-    myExhaust.add(x, y, xdir(angle,-5)+xspd, ydir(angle, -5)+yspd);
-    myExhaust.add(x, y, xdir(angle+4, -4.8) + xspd, ydir(angle+4, -4.8) + yspd);
-    myExhaust.add(x, y, xdir(angle+4, -5.2) + xspd, ydir(angle+4, -5.2) + yspd);
-    myExhaust.add(x, y, xdir(angle - 4, -4.8) + xspd, ydir(angle - 4, -4.8) + yspd);
-    myExhaust.add(x, y, xdir(angle - 4, -5.2) + xspd, ydir(angle - 4, -5.2) + yspd);
-    }
-    left_prev = left;
-    right_prev = right;
-    up_prev = up;
 }
 
 OtherPlayer::OtherPlayer(double x, double y, double angle, IPaddress ip)
