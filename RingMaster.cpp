@@ -37,8 +37,8 @@ void RingMaster::draw()
 	double x = rings[thisRing].x, y = rings[thisRing].y;
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i <= 36; i++) {
-		glColor3f(xdir(frame * 4, 0.2) + .4, 0.0f, 0.0f); //pulsing red
-		glVertex2f(x+xdir(i * 10, 20), y+ydir(i * 10, 20));
+		glColor3f(0.0f, 0.0f, 0.0f);
+		glVertex2f(x+xdir(i * 10, xdir(frame * 4, -5)+15), y+ydir(i * 10, xdir(frame * 4, -5) + 15));
 		glColor3f(.8, 0.0f, 0.0f); //pulsing red
 		glVertex2f(x + xdir(i * 10, 30),y+ ydir(i * 10, 30));
 	}
@@ -46,8 +46,8 @@ void RingMaster::draw()
 
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i <= 36; i++) {
-		glColor3f(xdir(frame * 4, 0.2) + .4, 0.0f, 0.0f); //pulsing red
-		glVertex2f(x + xdir(i * 10, 40), y+ydir(i * 10, 40));
+		glColor3f(0.0f, 0.0f, 0.0f); //pulsing red
+		glVertex2f(x + xdir(i * 10, xdir(frame * 4, 5) + 45), y+ydir(i * 10, xdir(frame * 4, 5) + 45));
 		glColor3f(.8, 0.0f, 0.0f); //pulsing red
 		glVertex2f(x + xdir(i * 10, 30), y+ydir(i * 10, 30));
 	}
