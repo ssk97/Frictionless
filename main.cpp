@@ -247,13 +247,18 @@ int main(int argc, char* args[])
 			    case STATE_BEGINGAME:
 				rngGame.seed(time(NULL));
 				g = GameLogic();
+				g.write_other_players = SDL_CreateMutex();
 				if (argc == 2)
 				{
+				    //Server
 				    g.addOtherPlayer(100, 100, 0, server_begin());
+				    SDL_CreateThread(receive_packets, "Network", &g);
 				}
 				if (argc == 3)
 				{
+				    //Client
 				    g.addOtherPlayer(100, 100, 0, client_begin(args[2]));
+				    SDL_CreateThread(receive_packets, "Network", &g);
 				}					    
 				state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
 			    case STATE_GAMEPLAY: 

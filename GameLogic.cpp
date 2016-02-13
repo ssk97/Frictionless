@@ -13,10 +13,12 @@ void GameLogic::step(const Uint8 *keyboard)
 	player.input(keyboard[SDL_SCANCODE_RIGHT], keyboard[SDL_SCANCODE_LEFT], keyboard[SDL_SCANCODE_UP]);
 	player.step();
 	rings.step(player.x, player.y);
+	SDL_LockMutex(write_other_players);
 	for(auto &p : others)
 	{
 	    p.step();
 	}
+	SDL_UnlockMutex(write_other_players);
 	send_packet(&player);
 }
 

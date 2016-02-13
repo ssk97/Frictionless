@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "network.h"
+#include "globals.h"
+#include "GameLogic.h"
 
 #define PACKET_SIZE 1024
 
@@ -59,13 +61,21 @@ IPaddress client_begin(char* hostname)
 }
 
 //This needs to be run in a seperate thread.
-void receive_packets()
+int receive_packets(void* gameLogic)
 {
     while(1)
     {
 	if (SDLNet_UDP_Recv(socket,packet))
 	{
-	    printf("We have a packet!");
+	    struct data_sent *data = (struct data_sent*) packet->data;
+	    /*GameLogic *g = (GameLogic*) gameLogic;
+	    SDL_LockMutex(g->write_other_players);
+	    for (auto &p : g->others)
+	    {
+		//Todo: Allow multiple other players
+		p.x = data->x; p.y = data->y; p.xspd = data->xspd; p.yspd = data->yspd; p.angle = data->angle; p.aspd = data->aspd;
+	    }
+	    SDL_UnlockMutex(g->write_other_players);*/
 	}
     }
 }
