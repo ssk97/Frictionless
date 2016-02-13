@@ -22,6 +22,9 @@ void Player::input(bool right, bool left, bool up)
 		myExhaust.add(x, y, xdir(angle - 4, -4.8) + xspd, ydir(angle - 4, -4.8) + yspd);
 		myExhaust.add(x, y, xdir(angle - 4, -5.2) + xspd, ydir(angle - 4, -5.2) + yspd);
 	}
+	left_prev = left;
+	right_prev = right;
+	up_prev = up;
 }
 void Player::step()
 {
