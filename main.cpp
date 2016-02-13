@@ -14,14 +14,33 @@ bool loadMedia();
 
 //Frees media and shuts down SDL
 void close();
-
+bool initGL();
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
 
 //The window renderer
 SDL_Renderer* gRenderer = NULL;
+SDL_GLContext gContext;
 
+void checkShader(GLuint shader)
+{
+	GLint status;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+	if (status != GL_TRUE)
+	{
+		char buffer[512];
+		glGetShaderInfoLog(shader, 512, NULL, buffer);
+		std::cout << buffer;
+	}
+}
+void checkErrors()
+{
+	GLenum err = glGetError();
+	if (err != GL_NO_ERROR) {
+		std::cerr << "OPEN GL ERROR!" << err;
+	}
+}
 
 bool init()
 {
@@ -36,14 +55,12 @@ bool init()
 	}
 	else
 	{
-		//Set texture filtering to linear
-		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"))
-		{
-			printf("Warning: Linear texture filtering not enabled!");
-		}
+		//Use OpenGL 2.1
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 		//Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
@@ -51,17 +68,20 @@ bool init()
 		}
 		else
 		{
-			//Create renderer for window
-			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-			if (gRenderer == NULL)
+			//Create context
+			gContext = SDL_GL_CreateContext(gWindow);
+			if (gContext == NULL)
 			{
-				printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
+				printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
 				success = false;
 			}
 			else
 			{
-				//Initialize renderer color
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				//Use Vsync
+				if (SDL_GL_SetSwapInterval(1) < 0)
+				{
+					printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+				}
 
 				//Initialize PNG loading
 				int imgFlags = IMG_INIT_PNG;
@@ -70,11 +90,63 @@ bool init()
 					printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
 					success = false;
 				}
+				//Initialize OpenGL
+				if (!initGL())
+				{
+					printf("Unable to initialize OpenGL!\n");
+					success = false;
+				}
 			}
 		}
 	}
 
 	return success;
+}
+
+bool initGL()
+{
+	GLenum error = GL_NO_ERROR;
+
+	//Initialize Projection Matrix
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	//Check for error
+	error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		std::cerr << "Error initializing OpenGL! %s\n"<<error;
+		return false;
+	}
+
+	//Initialize Modelview Matrix
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	//Check for error
+	error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		std::cerr << "Error initializing OpenGL! %s\n" << error;
+		return false;
+	}
+
+	//Initialize clear color
+	glClearColor(0.f, 0.f, 0.f, 1.f);
+
+	//Check for error
+	error = glGetError();
+	if (error != GL_NO_ERROR)
+	{
+		std::cerr << "Error initializing OpenGL! %s\n" << error;
+		return false;
+	}
+
+	if (glewInit() != GLEW_OK) {
+		std::cerr << "Error initializing glew! %s\n" << error;
+		return false;
+	}
+	return true;
 }
 
 bool loadMedia()
@@ -89,10 +161,8 @@ bool loadMedia()
 void close()
 {
 	//Destroy window	
-	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
 	gWindow = NULL;
-	gRenderer = NULL;
 
 	//Quit SDL subsystems
 	IMG_Quit();
@@ -125,6 +195,8 @@ SDL_Texture* loadTexture(std::string path)
 
 	return newTexture;
 }
+
+glm::mat4 view;
 #define STATE_MENU 0
 #define STATE_GAMEPLAY 1
 int main(int argc, char* args[])
@@ -147,13 +219,18 @@ int main(int argc, char* args[])
 			bool quit = false;
 			int state = STATE_GAMEPLAY;
 			Player * p = new Player(100, 100, 0);
+
+			view = glm::translate(view, glm::vec3(-1, 1, 0));
+			view = glm::scale(view, glm::vec3(2.0 / SCREEN_WIDTH, -2.0 / SCREEN_HEIGHT, 1.0));
+			const Uint8 *keyboard = SDL_GetKeyboardState(NULL);
 			//Event handler
 			SDL_Event e;
 			unsigned int frame = 0;
+			unsigned int endTime = SDL_GetTicks();
 			//While application is running
 			while (!quit)
 			{
-				unsigned int endTime = SDL_GetTicks()+17;
+				endTime = endTime +17;
 				frame++;
 				if (frame % 3 == 0) endTime--;
 				//Handle events on queue
@@ -166,49 +243,26 @@ int main(int argc, char* args[])
 					}
 				}
 				switch (state) {
-				case STATE_MENU: {
-					//Clear screen
-					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-					SDL_RenderClear(gRenderer);
-
-					//Render red filled quad
-					SDL_Rect fillRect = { SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
-					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-					SDL_RenderFillRect(gRenderer, &fillRect);
-
-					//Render green outlined quad
-					SDL_Rect outlineRect = { SCREEN_WIDTH / 6, SCREEN_HEIGHT / 6, SCREEN_WIDTH * 2 / 3, SCREEN_HEIGHT * 2 / 3 };
-					SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF);
-					SDL_RenderDrawRect(gRenderer, &outlineRect);
-
-					//Draw blue horizontal line
-					SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, 0xFF);
-					SDL_RenderDrawLine(gRenderer, 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2);
-
-					//Draw vertical line of yellow dots
-					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0x00, 0xFF);
-					for (int i = 0; i < SCREEN_HEIGHT; i += 4)
-					{
-						SDL_RenderDrawPoint(gRenderer, SCREEN_WIDTH / 2, i);
-					}
-				}
+					case STATE_MENU: 
 						break;
-				case STATE_GAMEPLAY: {
-					p->step();
-					//Clear screen
-					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-					SDL_RenderClear(gRenderer);
-					p->draw();
-				}
+					case STATE_GAMEPLAY: 
+						p->input(keyboard[SDL_SCANCODE_RIGHT], keyboard[SDL_SCANCODE_LEFT], keyboard[SDL_SCANCODE_UP]);
+						p->step();
+						//Clear screen
+						SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+						SDL_RenderClear(gRenderer);
+						p->draw();
 						break;
 				}
 				//Update screen
-				SDL_RenderPresent(gRenderer);
+				SDL_GL_SwapWindow(gWindow);
 				if (SDL_GetTicks() < endTime) {
 					//Sleep the remaining frame time
 					SDL_Delay(endTime-SDL_GetTicks());
 				}
-				std::cout <<frame<<":"<< SDL_GetTicks()<<"\n";
+				else {
+					std::cout << SDL_GetTicks()-endTime << "\n";
+				}
 			}
 		}
 	}

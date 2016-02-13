@@ -7,8 +7,13 @@ public:
 	~Player();
 	void step();
 	void draw();
+	void input(bool right, bool left, bool up);
 	double x, y, xspd, yspd, angle, aspd;
-private:
-	const Uint8 *keyboard;
+
+	void setupDrawing();
+	GLuint setupGeometry();
+	GLuint setupVertexShader();
+	GLuint setupFragmentShader();
+	GLuint shaderProgram, vertexShader, fragmentShader, posAttrib, uniTrans, vbo, vao;
 };
 
