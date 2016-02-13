@@ -3,7 +3,6 @@ GameLogic::GameLogic() : player(100, 100, 0)
 {
     //player = Player(100, 100, 0);
     //Player other = NULL;
-    bumpers.push_back(Bumper(300, 300, 25));
 }
 
 GameLogic::~GameLogic()

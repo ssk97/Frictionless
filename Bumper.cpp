@@ -10,7 +10,7 @@ Bumper::Bumper(double x, double y, double width)
 
 int Bumper::calculateCollision(double playerX, double playerY)
 {
-    if (!bbox(playerX, playerY, x, y, width, width))
+    if (!bbox(playerX, playerY, x, y, width * 2, width * 2))
     {
 	return BUMPER_NO_COLLISION;
     }
