@@ -141,34 +141,7 @@ bool initGL()
     return true;
 }
 
-bool loadMedia()
-{
-    GLuint TextureID = 0;
 
-    // You should probably use CSurface::OnLoad ... ;)
-    //-- and make sure the Surface pointer is good!
-    SDL_Surface* Surface = IMG_Load("Button.png");
-    if (Surface == NULL)
-    {
-        std::cerr << "Unable to load image Button.png! SDL_image Error: " << IMG_GetError() << "\n";
-        return false;
-    }
-    glGenTextures(1, &TextureID);
-    glBindTexture(GL_TEXTURE_2D, TextureID);
-
-    int Mode = GL_RGB;
-
-    if (Surface->format->BytesPerPixel == 4) {
-        Mode = GL_RGBA;
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, Mode, Surface->w, Surface->h, 0, Mode, GL_UNSIGNED_BYTE, Surface->pixels);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    return true;
-}
 
 void close()
 {
@@ -225,8 +198,9 @@ int main(int argc, char* args[])
     }
     else
     {
+        Menu menu = Menu();
         //Load media
-        if (!loadMedia())
+        if (!menu.init())
         {
             printf("Failed to load media!\n");
         }
@@ -279,7 +253,6 @@ int main(int argc, char* args[])
                 if (keyboard[SDL_SCANCODE_ESCAPE]) {
                     quit = true;
                 }
-                Menu menu = Menu();
                 switch (state) {
                     case STATE_MENU:
                         g = GameLogic();

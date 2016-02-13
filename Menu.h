@@ -10,6 +10,7 @@ class Menu
 public:
     int step(Sint32 mouseX, Sint32 mouseY, bool clicked);//returns mode if changed, 0 if no change
     void draw(Sint32 mouseX, Sint32 mouseY);
+    bool init();//load all the files into surfaces into openGL textures
     Menu();
     ~Menu();
 };
