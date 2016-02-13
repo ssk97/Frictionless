@@ -37,7 +37,7 @@ void Player::draw()
 	glTranslated(x, y, 0);
 	glRotated(angle, 0, 0, 1);
 
-	glColor3f(0.0f, 1.0f, 0.0f); //green color
+	glColor3f(0.0f, 1.0f, 0.0f); //green
 	glBegin(GL_TRIANGLE_STRIP);
 		glVertex2f(-10, -20);
 		glVertex2f(0, 0);
@@ -46,11 +46,11 @@ void Player::draw()
 	glEnd();//ship
 
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glBegin(GL_TRIANGLE_FAN);
-	glColor3f(0.0f, 0.0f, 0.0f); //black color
+	glColor3f(0.0f, 0.0f, 0.2f); //dark blue
 	glVertex2f(0, 0);
-	glColor3f(0.0f, 0.0f, 1.0f); //blue color
+	glColor3f(0.0f, 0.0f, 1.0f); //blue
 	for (int i = 0; i <= 36; i++) {
 		glVertex2f(xdir(i * 10, 20), ydir(i * 10, 20));
 	}
