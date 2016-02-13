@@ -47,6 +47,9 @@ void Exhaust::draw()
 		}
 		glEnd();//ember
 		i--;
+		if (i < 0) {
+			i += MAX_PARTICLES;
+		}
 	}
 
 	glDisable(GL_BLEND);
