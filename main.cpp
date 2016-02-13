@@ -288,20 +288,27 @@ int main(int argc, char* args[])
                         menu.draw( mouseX,  mouseY);
                     break;
                     case STATE_BEGINGAME:
-                        rngGame.seed(time(NULL));
                         g = GameLogic();
                         g.write_other_players = SDL_CreateMutex();
                         if (mode == M_SERVER)
                         {
                             //Server
-                            g.addOtherPlayer(100, 100, 0, server_begin());
+                            uint32_t rng_seed;
+                            g.addOtherPlayer(100, 100, 0, server_begin(&rng_seed));
+                            rngGame.seed(rng_seed);
                             SDL_CreateThread(receive_packets, "Network", &g);
                         }
                         if (mode == M_CLIENT)
                         {
                             //Client
-                            g.addOtherPlayer(100, 100, 0, client_begin(args[1]));
+                            uint32_t rng_seed = time(NULL);
+                            g.addOtherPlayer(100, 100, 0, client_begin(args[1], rng_seed));
+                            rngGame.seed(rng_seed);
                             SDL_CreateThread(receive_packets, "Network", &g);
+                        }
+                        else
+                        {
+                            rngGame.seed(time(NULL));		    
                         }
                         state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
                     case STATE_GAMEPLAY: 

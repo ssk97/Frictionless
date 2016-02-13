@@ -10,7 +10,7 @@ UDPpacket* read_packet;
 UDPpacket* write_packet;
 IPaddress addr;
 
-IPaddress server_begin()
+IPaddress server_begin(uint32_t* rng_seed)
 {
     socket = SDLNet_UDP_Open(PORT_NUMBER);
     if (socket == NULL)
@@ -26,17 +26,20 @@ IPaddress server_begin()
 	if(SDLNet_UDP_Recv(socket,read_packet))
 	{
 	    printf("Got opening connection");
-	    //Do something with packet->data and packet->len
+
+	    struct data_sent *data = (struct data_sent*) read_packet->data;
+	    
 	    addr = read_packet->address;
 	    write_packet->address.host = read_packet->address.host;
-	    write_packet->address.port = read_packet->address.port;		
+	    write_packet->address.port = read_packet->address.port;
+	    *rng_seed = data->rng_seed;
 	    ready = 1;
 	}
     }
     return read_packet->address;
 }
 
-IPaddress client_begin(char* hostname)
+IPaddress client_begin(char* hostname, uint32_t rng_seed)
 {
     socket = SDLNet_UDP_Open(0);
     if (socket == NULL)
@@ -55,7 +58,7 @@ IPaddress client_begin(char* hostname)
     write_packet->address.host = addr.host;
     write_packet->address.port = PORT_NUMBER;
     //TODO: Transmit some real information over the wire.
-    struct data_sent data = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    struct data_sent data = {0, 0, 0, 0, 0, 0, 0, 0, 0, rng_seed};
     write_packet->len = sizeof(data);
 
     if (SDLNet_UDP_Send(socket, -1, write_packet) == 0)
