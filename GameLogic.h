@@ -9,7 +9,7 @@ public:
 	~GameLogic();
 	void step(const Uint8*);
 	void draw();
-	Player player;
+	ActivePlayer player;
 	RingMaster rings;
 	//Player other;
 };

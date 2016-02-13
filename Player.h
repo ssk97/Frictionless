@@ -13,15 +13,16 @@ public:
 	Exhaust myExhaust;
 };
 
-class ActivePlayer : Player
+class ActivePlayer : public Player
 {
+    using Player::Player;
 public:
 	void input(bool right, bool left, bool up);
 	Uint8 left_prev, right_prev, up_prev; //It needs to be Uint8 to be sent over the wire.    
-}
+};
 
 class OtherPlayer : Player
 {
 public:
     IPaddress ipAddr;
-}
+};
