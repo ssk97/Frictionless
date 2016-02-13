@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "Player.h"
+#include "GameLogic.h"
 //Starts up SDL and creates window
 bool init();
 
@@ -221,7 +222,7 @@ int main(int argc, char* args[])
 			//Main loop flag
 			bool quit = false;
 			int state = STATE_GAMEPLAY;
-			Player * p = new Player(100, 100, 0);
+			Player p = Player(100, 100, 0);
 			
 			glLoadIdentity();
 			glTranslated(-1, 1, 0);
@@ -253,12 +254,8 @@ int main(int argc, char* args[])
 					case STATE_MENU: 
 						break;
 					case STATE_GAMEPLAY: 
-						p->input(keyboard[SDL_SCANCODE_RIGHT], keyboard[SDL_SCANCODE_LEFT], keyboard[SDL_SCANCODE_UP]);
-						p->step();
-						//Clear screen
-						glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-						glClear(GL_COLOR_BUFFER_BIT);
-						p->draw();
+						gameLogicLoop(&p, keyboard);
+						drawLoop(&p);
 						break;
 				}
 				//Update screen
