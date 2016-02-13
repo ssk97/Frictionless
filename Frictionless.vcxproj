@@ -124,6 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bumper.cpp" />
     <ClCompile Include="Exhaust.cpp" />
     <ClCompile Include="GameLogic.cpp" />
     <ClCompile Include="main.cpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="RingMaster.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bumper.h" />
     <ClInclude Include="Exhaust.h" />
     <ClInclude Include="GameLogic.h" />
     <ClInclude Include="globals.h" />
