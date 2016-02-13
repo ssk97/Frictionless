@@ -11,11 +11,6 @@ Menu::~Menu()
 {
 }
 
-double w = 865 / 9./2;//font width
-double h = 1332 / 11./2;//font height
-double texw = 1 / 9.;
-double texh = 1 / 11.;
-
 bool Menu::init() {
     GLuint TextureID = 0;
 
@@ -82,6 +77,8 @@ void Menu::draw_char(double x, double y, char c) {
     if (c >= 'A' && c <= 'Z') id = c - 'A' + 10;
     if (c >= 'a' && c <= 'z') id = c - 'a' + 10;
     if (c == '.') id = 80;
+    if (c == '/') id = 68;
+    if (c == ':') id = 81;
     if (id != -1) {
         double charx = (id % 9)*texw;
         double chary = (id / 9)*texh;
@@ -93,11 +90,11 @@ void Menu::draw_char(double x, double y, char c) {
         glColor3f(1.0f, 1.0f, 1.0f);
         glBegin(GL_QUADS);
         glTexCoord2f(charx, chary+texh);
-        glVertex2f(x, y + h);
+        glVertex2f(x, y + chrh);
         glTexCoord2f(charx+texw, chary + texh);
-        glVertex2f(x + w, y + h);
+        glVertex2f(x + chrw, y + chrh);
         glTexCoord2f(charx + texw, chary);
-        glVertex2f(x + w, y);
+        glVertex2f(x + chrw, y);
         glTexCoord2f(charx, chary);
         glVertex2f(x, y);
         glEnd();
@@ -108,7 +105,7 @@ void Menu::draw_char(double x, double y, char c) {
 void Menu::draw_text(double x, double y, char* arr) {
     int i = 0;
     while (arr[i] != 0) {
-        draw_char(x + i*w, y, arr[i]);
+        draw_char(x + i*chrw, y, arr[i]);
         i++;
     }
 }
@@ -117,13 +114,13 @@ int Menu::step(Sint32 mouseX, Sint32 mouseY, bool clicked, const Uint8 *keyboard
     switch (substate) {
         case s_main:
             if (clicked) {
-                if (bbox(mouseX, mouseY, 100, 100, w * 13, h)) {
+                if (bbox(mouseX, mouseY, 100, 100, chrw * 13, chrh)) {
                     return M_SINGLEPLAYER;
                 }
-                if (bbox(mouseX, mouseY, 100, 300, w * 11, h)) {
+                if (bbox(mouseX, mouseY, 100, 300, chrw * 11, chrh)) {
                     substate = s_clientIP;
                 }
-                if (bbox(mouseX, mouseY, 100, 500, w * 11, h)) {
+                if (bbox(mouseX, mouseY, 100, 500, chrw * 11, chrh)) {
                     return M_SERVER;
                 }
             }
@@ -207,11 +204,11 @@ void draw_round_rect(double x, double y, double w, double h, Sint32 mouseX, Sint
 void Menu::draw(Sint32 mouseX, Sint32 mouseY) {
     switch (substate) {
         case s_main:
-            draw_round_rect(100, 100, w * 13, h, mouseX, mouseY);
+            draw_round_rect(100, 100, chrw * 13, chrh, mouseX, mouseY);
             draw_text(100, 100, "Single Player");
-            draw_round_rect(100, 300, w * 11, h, mouseX, mouseY);
+            draw_round_rect(100, 300, chrw * 11, chrh, mouseX, mouseY);
             draw_text(100, 300, "Client Game");
-            draw_round_rect(100, 500, w * 11, h, mouseX, mouseY);
+            draw_round_rect(100, 500, chrw * 11, chrh, mouseX, mouseY);
             draw_text(100, 500, "Server Game");
             break;
         case s_clientIP:

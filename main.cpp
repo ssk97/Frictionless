@@ -29,7 +29,7 @@ SDL_GLContext gContext;
 
 unsigned long frame;
 std::mt19937 rngGame, rngGfx;
-bool init()
+bool init(int screen)//0 = windowed (default), 1 = 1.5x screen, 2 = fullscreen, 3 = 1.5x fullscreen mode
 {
     //Initialization flag
     bool success = true;
@@ -49,7 +49,19 @@ bool init()
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
         //Create window
-        gWindow = SDL_CreateWindow("Frictionless", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+        switch (screen) {
+        case 1:
+            gWindow = SDL_CreateWindow("Frictionless", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH*1.5, SCREEN_HEIGHT*1.5, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+            break;
+        case 2:
+            gWindow = SDL_CreateWindow("Frictionless", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+            break;
+        case 3:
+            gWindow = SDL_CreateWindow("Frictionless", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH*1.5, SCREEN_HEIGHT*1.5, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+            break;
+        default:
+            gWindow = SDL_CreateWindow("Frictionless", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+        }
         SDLNet_Init();
         if (gWindow == NULL)
         {
@@ -192,7 +204,11 @@ bool clicked;
 int main(int argc, char* args[])
 {
     //Start up SDL and create window
-    if (!init())
+    int screenmode = 0;
+    if (argc > 1) {
+        screenmode = std::stoi(args[1]);
+    }
+    if (!init(screenmode))
     {
         printf("Failed to initialize!\n");
     }
@@ -243,12 +259,20 @@ int main(int argc, char* args[])
                         //Get the mouse offsets 
                         mouseX = e.motion.x;
                         mouseY = e.motion.y;
+                        if (screenmode == 1 || screenmode == 3) {
+                            mouseX /= 1.5;
+                            mouseY /= 1.5;
+                        }
                     }
                     if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
                         mouseX = e.button.x;
                         mouseY = e.button.y;
                         if (e.button.button == SDL_BUTTON_LEFT)
                             clicked = (e.button.state == SDL_PRESSED);
+                        if (screenmode == 1 || screenmode == 3) {
+                            mouseX /= 1.5;
+                            mouseY /= 1.5;
+                        }
                     }
                     if (e.type == SDL_KEYDOWN) {
                         keydown = e.key.keysym.scancode;
@@ -303,13 +327,22 @@ int main(int argc, char* args[])
                         g.step(keyboard);
                         g.draw();
                         if (g.rings.thisRing >= 20) {
-                            menu.draw_text(10, 10, "You won. It took you");
-                            menu.draw_text(10, 110, const_cast<char *>((std::to_string(g.timeFlying)).c_str()));
-                            menu.draw_text(10, 200, "Press Enter to return to menu");
+                            menu.draw_text(10, 10, "You won");
+                            menu.draw_text(10, 110, "Time taken:");
+                            menu.draw_text(10 + chrw * 11, 110, const_cast<char *>((std::to_string(g.timeFlying)).c_str()));
+                            menu.draw_text(10, 200, "Press Enter to return");
+                            menu.draw_text(10, 300, "to menu");
                             if (keydown == SDL_SCANCODE_RETURN) {
                                 state = STATE_MENU;
                                 //FREE STUFF
                             }
+                        }
+                        else {
+                            if (g.rings.thisRing >= 10)
+                                menu.draw_text(10, 10, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));
+                            else
+                                menu.draw_text(10 + chrw, 10, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));
+                            menu.draw_text(10 + 2 * chrw, 10, "/20");
                         }
                         break;
                     }

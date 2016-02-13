@@ -7,6 +7,11 @@
 
 #define s_main 1
 #define s_clientIP 2
+
+static double chrw = 865 / 9. / 2;//font width
+static double chrh = 1332 / 11. / 2;//font height
+static double texw = 1 / 9.;
+static double texh = 1 / 11.;
 class Menu
 {
 public:
