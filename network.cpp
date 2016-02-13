@@ -6,7 +6,8 @@
 #define PACKET_SIZE 10000
 
 UDPsocket socket;
-UDPpacket* packet;
+UDPpacket* read_packet;
+UDPpacket* write_packet;
 IPaddress addr;
 
 IPaddress server_begin()
@@ -17,19 +18,20 @@ IPaddress server_begin()
 	printf("Could not open socket: %s\n", SDLNet_GetError());
 	throw 8;
     }
-    packet = SDLNet_AllocPacket(PACKET_SIZE);
+    read_packet = SDLNet_AllocPacket(PACKET_SIZE);
+    write_packet = SDLNet_AllocPacket(PACKET_SIZE);
     int ready = 0;
     while(!ready)
     {
-	if(SDLNet_UDP_Recv(socket,packet))
+	if(SDLNet_UDP_Recv(socket,read_packet))
 	{
 	    printf("Got opening connection");
 	    //Do something with packet->data and packet->len
-	    addr = packet->address;
+	    addr = read_packet->address;
 	    ready = 1;
 	}
     }
-    return packet->address;
+    return read_packet->address;
 }
 
 IPaddress client_begin(char* hostname)
@@ -41,24 +43,25 @@ IPaddress client_begin(char* hostname)
 	throw 445;
     }
     SDLNet_ResolveHost(&addr, hostname, PORT_NUMBER);
-    packet = SDLNet_AllocPacket(PACKET_SIZE);
-    if (!packet)
+    read_packet = SDLNet_AllocPacket(PACKET_SIZE);
+    write_packet = SDLNet_AllocPacket(PACKET_SIZE);    
+    if (!write_packet)
     {
 	printf("Invalid packet.\n");
 	throw 15;
     }
-    packet->address.host = addr.host;
-    packet->address.port = PORT_NUMBER;
+    write_packet->address.host = addr.host;
+    write_packet->address.port = PORT_NUMBER;
     //TODO: Transmit some real information over the wire.
-    packet->data = (Uint8*) "hi";
-    packet->len = 200;
+    write_packet->data = (Uint8*) "hi";
+    write_packet->len = 200;
 
-    if (SDLNet_UDP_Send(socket, -1, packet) == 0)
+    if (SDLNet_UDP_Send(socket, -1, write_packet) == 0)
     {
 	printf("Something went wrong: %s\n", SDLNet_GetError());
 	throw 4454;
     }
-    return packet->address;
+    return write_packet->address;
 }
 
 //This needs to be run in a seperate thread.
@@ -68,7 +71,7 @@ int receive_packets(void* gameLogic)
     while(1)
     {
 	SDL_Delay(1);
-	int recv = SDLNet_UDP_Recv(socket, packet);
+	int recv = SDLNet_UDP_Recv(socket, read_packet);
 	if (recv == -1)
 	{
 	    printf("Broken: %s\n", SDLNet_GetError());
@@ -77,7 +80,7 @@ int receive_packets(void* gameLogic)
 	if (recv == 1)
 	{
 	    printf("Got one!");
-	    struct data_sent *data = (struct data_sent*) packet->data;
+	    struct data_sent *data = (struct data_sent*) read_packet->data;
 	    GameLogic *g = (GameLogic*) gameLogic;
 	    SDL_LockMutex(g->write_other_players);
 	    for (auto &p : g->others)
@@ -93,10 +96,10 @@ int receive_packets(void* gameLogic)
 void send_packet(ActivePlayer* play)
 {
     struct data_sent data = {play->x, play->y, play->xspd, play->yspd, play->angle, play->aspd, play->left_prev, play->right_prev, play->up_prev};
-    packet->data = (Uint8*) &data;
-    packet->len = 80;
+    write_packet->data = (Uint8*) &data;
+    write_packet->len = 80;
     printf("Size of data: %i", sizeof(struct data_sent));
-    if (SDLNet_UDP_Send(socket, -1, packet) == 0)
+    if (SDLNet_UDP_Send(socket, -1, write_packet) == 0)
     {
 	printf("Something went wrong. D:\n");
 	throw 44;
