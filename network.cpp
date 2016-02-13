@@ -7,7 +7,7 @@ UDPsocket socket;
 UDPpacket* packet;
 IPaddress addr;
 
-void server_begin()
+IPaddress server_begin()
 {
     socket = SDLNet_UDP_Open(PORT_NUMBER);
     if (socket == NULL)
@@ -26,10 +26,10 @@ void server_begin()
 	    ready = 1;
 	}
     }
-    return;
+    return packet->address;
 }
 
-void client_begin(char* hostname)
+IPaddress client_begin(char* hostname)
 {
     socket = SDLNet_UDP_Open(0);
     SDLNet_ResolveHost(&addr, hostname, PORT_NUMBER);
@@ -50,7 +50,7 @@ void client_begin(char* hostname)
 	printf("Something went wrong. :(\n");
 	throw 4454;
     }
-    return;
+    return packet->address;
 }
 
 //This needs to be run in a seperate thread.

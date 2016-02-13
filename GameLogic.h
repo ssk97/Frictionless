@@ -15,5 +15,4 @@ public:
 	ActivePlayer player;
 	RingMaster rings;
 	std::vector<Player> others;
-	//Player other;
 };

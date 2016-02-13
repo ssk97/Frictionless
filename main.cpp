@@ -244,18 +244,16 @@ int main(int argc, char* args[])
 			    case STATE_MENU: 
 				break;
 			    case STATE_BEGINGAME:
+				rngGame.seed(time(NULL));
+				g = GameLogic();
 				if (argc == 2)
 				{
-				    server_begin();
-				    //others.push_back(Player(100,100,0));	
+				    g.addOtherPlayer(100, 100, 0, server_begin());
 				}
 				if (argc == 3)
 				{
-				    client_begin(args[2]);
-				    //others.push_back(Player(100,100,0));
+				    g.addOtherPlayer(100, 100, 0, client_begin(args[2]));
 				}					    
-				rngGame.seed(time(NULL));
-				g = GameLogic();
 				state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
 			    case STATE_GAMEPLAY: 
 				g.step(keyboard);
