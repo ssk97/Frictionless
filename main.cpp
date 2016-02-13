@@ -298,7 +298,7 @@ int main(int argc, char* args[])
                             rngGame.seed(rng_seed);
                             SDL_CreateThread(receive_packets, "Network", &g);
                         }
-                        if (mode == M_CLIENT)
+                        else if (mode == M_CLIENT)
                         {
                             //Client
                             uint32_t rng_seed = time(NULL);
