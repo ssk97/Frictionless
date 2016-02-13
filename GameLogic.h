@@ -15,5 +15,6 @@ public:
 	ActivePlayer player;
 	RingMaster rings;
 	std::vector<Player> others;
-	SDL_mutex* write_other_players;	
+	SDL_mutex* write_other_players;
+	int multiplayer = 0;
 };

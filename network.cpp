@@ -65,17 +65,23 @@ int receive_packets(void* gameLogic)
 {
     while(1)
     {
-	if (SDLNet_UDP_Recv(socket,packet))
+	int recv = SDLNet_UDP_Recv(socket, packet);
+	if (recv == -1)
+	{
+	    printf("Broken: %s\n", SDLNet_GetError());
+	    throw 999;
+	}
+	if (recv == 1)
 	{
 	    struct data_sent *data = (struct data_sent*) packet->data;
-	    /*GameLogic *g = (GameLogic*) gameLogic;
+	    GameLogic *g = (GameLogic*) gameLogic;
 	    SDL_LockMutex(g->write_other_players);
 	    for (auto &p : g->others)
 	    {
 		//Todo: Allow multiple other players
 		p.x = data->x; p.y = data->y; p.xspd = data->xspd; p.yspd = data->yspd; p.angle = data->angle; p.aspd = data->aspd;
 	    }
-	    SDL_UnlockMutex(g->write_other_players);*/
+	    SDL_UnlockMutex(g->write_other_players);
 	}
     }
 }

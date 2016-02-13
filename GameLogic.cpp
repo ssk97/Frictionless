@@ -19,7 +19,8 @@ void GameLogic::step(const Uint8 *keyboard)
 	    p.step();
 	}
 	SDL_UnlockMutex(write_other_players);
-	send_packet(&player);
+
+	if (multiplayer) send_packet(&player);
 }
 
 void GameLogic::draw()
@@ -38,5 +39,6 @@ void GameLogic::draw()
 
 void GameLogic::addOtherPlayer(double x, double y, double angle, IPaddress ip)
 {
+    multiplayer = 1;
     others.push_back(OtherPlayer(x, y, angle, ip));
 }
