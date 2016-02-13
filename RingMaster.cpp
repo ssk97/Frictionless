@@ -2,8 +2,8 @@
 
 double fRand(double fMin, double fMax)
 {
-	double f = (double)rand() / RAND_MAX;
-	return fMin + f * (fMax - fMin);
+	std::uniform_real_distribution<double> dis(0, 1.0);
+	return fMin + dis(rngGame) * (fMax - fMin);
 }
 bool distWithin(double x1, double y1, double x2, double y2, double dist)
 {

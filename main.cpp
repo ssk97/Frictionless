@@ -25,26 +25,8 @@ SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 SDL_GLContext gContext;
 
-void checkShader(GLuint shader)
-{
-	GLint status;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-	if (status != GL_TRUE)
-	{
-		char buffer[512];
-		glGetShaderInfoLog(shader, 512, NULL, buffer);
-		std::cout << buffer;
-	}
-}
-void checkErrors()
-{
-	GLenum err = glGetError();
-	if (err != GL_NO_ERROR) {
-		std::cerr << "OPEN GL ERROR!" << err;
-	}
-}
-
 unsigned long frame;
+std::mt19937 rngGame, rngGfx;
 bool init()
 {
 	//Initialization flag
@@ -65,7 +47,7 @@ bool init()
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 		//Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH*1.5, SCREEN_HEIGHT*1.5, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);// | SDL_WINDOW_FULLSCREEN);
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
@@ -206,6 +188,7 @@ SDL_Texture* loadTexture(std::string path)
 #define STATE_MENU 0
 #define STATE_BEGINGAME 1
 #define STATE_GAMEPLAY 2
+#include <time.h>
 int main(int argc, char* args[])
 {
 	//Start up SDL and create window
@@ -237,7 +220,9 @@ int main(int argc, char* args[])
 				client_begin(args[2]);
 				//others.push_back(Player(100,100,0));
 			}
-			
+
+			rngGfx.seed(time(NULL));
+
 			glLoadIdentity();
 			glTranslated(-1, 1, 0);
 			glScaled(2.0 / SCREEN_WIDTH, -2.0 / SCREEN_HEIGHT, 1.0);
@@ -270,6 +255,7 @@ int main(int argc, char* args[])
 					case STATE_MENU: 
 						break;
 					case STATE_BEGINGAME:
+						rngGame.seed(time(NULL));
 						g = GameLogic();
 						state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
 					case STATE_GAMEPLAY: 
