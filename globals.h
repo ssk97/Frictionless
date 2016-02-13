@@ -15,9 +15,6 @@ const int SCREEN_HEIGHT = 768;
 
 extern unsigned long frame;
 
-extern void checkShader(GLuint shader);
-extern void checkErrors();
-
 static double xdir(double angle, double distance) {
 	return -sin((angle * M_PI) / 180)*distance;
 }
