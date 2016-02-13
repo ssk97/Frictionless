@@ -1,7 +1,13 @@
 #pragma once
 #include "globals.h"
 #include "Player.h"
-
-void gameLogicLoop(Player*, Player*, const Uint8*);
-
-void drawLoop(Player*, Player*);
+class GameLogic
+{
+public:
+	GameLogic();
+	~GameLogic();
+	void step(const Uint8*);
+	void draw();
+	Player player;
+	//Player other;
+};
