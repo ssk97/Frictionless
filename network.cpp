@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "GameLogic.h"
 
-#define PACKET_SIZE 1024
+#define PACKET_SIZE 10000
 
 UDPsocket socket;
 UDPpacket* packet;
@@ -50,11 +50,11 @@ IPaddress client_begin(char* hostname)
     packet->address.port = PORT_NUMBER;
     //TODO: Transmit some real information over the wire.
     packet->data = (Uint8*) "hi";
-    packet->len = 10;
+    packet->len = 200;
 
     if (SDLNet_UDP_Send(socket, -1, packet) == 0)
     {
-	printf("Something went wrong. :(\n");
+	printf("Something went wrong: %s\n", SDLNet_GetError());
 	throw 4454;
     }
     return packet->address;
@@ -63,8 +63,10 @@ IPaddress client_begin(char* hostname)
 //This needs to be run in a seperate thread.
 int receive_packets(void* gameLogic)
 {
+    printf("Starting to recieve packets");
     while(1)
     {
+	SDL_Delay(1);
 	int recv = SDLNet_UDP_Recv(socket, packet);
 	if (recv == -1)
 	{
@@ -73,6 +75,7 @@ int receive_packets(void* gameLogic)
 	}
 	if (recv == 1)
 	{
+	    printf("Got one!");
 	    struct data_sent *data = (struct data_sent*) packet->data;
 	    GameLogic *g = (GameLogic*) gameLogic;
 	    SDL_LockMutex(g->write_other_players);
@@ -82,15 +85,16 @@ int receive_packets(void* gameLogic)
 		p.x = data->x; p.y = data->y; p.xspd = data->xspd; p.yspd = data->yspd; p.angle = data->angle; p.aspd = data->aspd;
 	    }
 	    SDL_UnlockMutex(g->write_other_players);
+	    }
 	}
-    }
 }
 
 void send_packet(ActivePlayer* play)
 {
     struct data_sent data = {play->x, play->y, play->xspd, play->yspd, play->angle, play->aspd, play->left_prev, play->right_prev, play->up_prev};
     packet->data = (Uint8*) &data;
-    packet->len = sizeof(data);
+    packet->len = 80;
+    printf("Size of data: %i", sizeof(struct data_sent));
     if (SDLNet_UDP_Send(socket, -1, packet) == 0)
     {
 	printf("Something went wrong. D:\n");

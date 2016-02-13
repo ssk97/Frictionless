@@ -20,7 +20,12 @@ void GameLogic::step(const Uint8 *keyboard)
 	}
 	SDL_UnlockMutex(write_other_players);
 
-	if (multiplayer) send_packet(&player);
+	if (multiplayer && turns == 10)
+	{
+	    send_packet(&player);
+	    turns = 0;
+	}
+	turns++;
 }
 
 void GameLogic::draw()
