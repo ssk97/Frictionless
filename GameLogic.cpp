@@ -28,6 +28,8 @@ void GameLogic::step(const Uint8 *keyboard)
         turns = 0;
     }
     turns++;
+    if (rings.thisRing < 20)
+        timeFlying++;
 }
 
 void GameLogic::draw()

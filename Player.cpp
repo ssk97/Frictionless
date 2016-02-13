@@ -53,11 +53,13 @@ void Player::draw()
 	glColor3f(1.0f, 0.0f, 0.0f);
     else
 	glColor3f(0.0f, 1.0f, 0.0f);
-    glBegin(GL_TRIANGLE_STRIP);
-        glVertex2f(-10, -20);
+    glBegin(GL_TRIANGLE_FAN);
         glVertex2f(0, 0);
+        glVertex2f(15, -20);
+        glVertex2f(10, 5);
         glVertex2f(0, 20);
-        glVertex2f(10, -20);
+        glVertex2f(-10, 5);
+        glVertex2f(-15, -20);
     glEnd();//ship
 
     glEnable(GL_BLEND);
