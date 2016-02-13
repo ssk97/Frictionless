@@ -224,6 +224,13 @@ int main(int argc, char* args[])
 			bool quit = false;
 			int state = STATE_GAMEPLAY;
 			Player p = Player(100, 100, 0);
+			Player other;
+			if (argc < 2)
+			{
+				printf("Single player.\n");
+				other = NULL;
+			}
+			
 			
 			glLoadIdentity();
 			glTranslated(-1, 1, 0);
