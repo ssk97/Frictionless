@@ -206,9 +206,15 @@ SDL_Texture* loadTexture(std::string path)
     return newTexture;
 }
 
+Sint32 mouseX, mouseY;
+bool clicked;
+
 #define STATE_MENU 0
 #define STATE_BEGINGAME 1
 #define STATE_GAMEPLAY 2
+#define M_SINGLEPLAYER 0
+#define M_CLIENT 1
+#define M_SERVER 2
 #include <time.h>
 int main(int argc, char* args[])
 {
@@ -228,8 +234,8 @@ int main(int argc, char* args[])
         {
             //Main loop flag
             bool quit = false;
-            int state = STATE_BEGINGAME;
-
+            int state = STATE_MENU;
+            int mode = M_SINGLEPLAYER;
 
             rngGfx.seed(time(NULL));
 
@@ -247,67 +253,90 @@ int main(int argc, char* args[])
             //While application is running
             while (!quit)
             {
-                endTime = endTime +17;
+                endTime = endTime + 17;
                 frame++;
                 if (frame % 3 == 0) endTime--;
                 //Handle events on queue
                 while (SDL_PollEvent(&e) != 0)
                 {
-                //User requests quit
-                if (e.type == SDL_QUIT)
-                {
+                    //User requests quit
+                    if (e.type == SDL_QUIT)
+                    {
+                        quit = true;
+                    }
+                    if (e.type == SDL_MOUSEMOTION) {
+                        //Get the mouse offsets 
+                        mouseX = e.motion.x;
+                        mouseY = e.motion.y;
+                    }
+                    if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
+                        mouseX = e.button.x;
+                        mouseY = e.button.y;
+                        if (e.button.button == SDL_BUTTON_LEFT)
+                            clicked = (e.button.state == SDL_PRESSED);
+                    }
+                }
+                if (keyboard[SDL_SCANCODE_ESCAPE]) {
                     quit = true;
                 }
-                }
-                if (keyboard[SDL_SCANCODE_ESCAPE])
-                quit = true;
                 switch (state) {
-                case STATE_MENU: 
-                    glEnable(GL_TEXTURE_2D);
-                    glColor3f(1.0f, 1.0f, 1.0f);
-                    glBegin(GL_QUADS);
-                    //glColor3d(1, 0, 0); 
-                    glTexCoord2f(0.0f, 1.0f);
-                    glVertex2f(100, 500);
-                    glTexCoord2f(1.0f, 1.0f);
-                    glVertex2f(740, 500);
-                    glTexCoord2f(1.0f, 0.0f);
-                    glVertex2f(740, 100);
-                    glTexCoord2f(0.0f, 0.0f);
-                    glVertex2f(100, 100);
-                    glEnd();
-                break;
-                case STATE_BEGINGAME:
-                rngGame.seed(time(NULL));
-                g = GameLogic();
-                g.write_other_players = SDL_CreateMutex();
-                if (argc == 2)
-                {
-                    //Server
-                    g.addOtherPlayer(100, 100, 0, server_begin());
-                    SDL_CreateThread(receive_packets, "Network", &g);
-                }
-                if (argc == 3)
-                {
-                    //Client
-                    g.addOtherPlayer(100, 100, 0, client_begin(args[2]));
-                    SDL_CreateThread(receive_packets, "Network", &g);
-                }
-                state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
-                case STATE_GAMEPLAY: 
-                g.step(keyboard);
-                g.draw();
-                break;
-                }
-                //Update screen
-                SDL_GL_SwapWindow(gWindow);
-                if (SDL_GetTicks() < endTime) {
-                    //Sleep the remaining frame time
-                    SDL_Delay(endTime-SDL_GetTicks());
-                }
-                else {
-                    //std::cout << SDL_GetTicks()-endTime << "\n";
-                }
+                    case STATE_MENU: 
+                        glEnable(GL_TEXTURE_2D);
+                        glColor3f(1.0f, 1.0f, 1.0f);
+                        glBegin(GL_QUADS);
+                        //glColor3d(1, 0, 0); 
+                        glTexCoord2f(0.0f, 1.0f);
+                        glVertex2f(172, 584);
+                        glTexCoord2f(1.0f, 1.0f);
+                        glVertex2f(812, 584);
+                        glTexCoord2f(1.0f, 0.0f);
+                        glVertex2f(812, 184);
+                        glTexCoord2f(0.0f, 0.0f);
+                        glVertex2f(172, 184);
+                        glEnd();
+                        glDisable(GL_TEXTURE_2D);
+                        if (clicked) {
+                            if (mouseY < 300)
+                                mode = M_SINGLEPLAYER;
+                            else if (mouseY > 450)
+                                mode = M_SERVER;
+                            else
+                                mode = M_CLIENT;
+                            std::cout << mode;
+                            state = STATE_BEGINGAME;
+                        }
+                    break;
+                    case STATE_BEGINGAME:
+                        rngGame.seed(time(NULL));
+                        g = GameLogic();
+                        g.write_other_players = SDL_CreateMutex();
+                        if (mode == M_SERVER)
+                        {
+                            //Server
+                            g.addOtherPlayer(100, 100, 0, server_begin());
+                            SDL_CreateThread(receive_packets, "Network", &g);
+                        }
+                        if (mode == M_CLIENT)
+                        {
+                            //Client
+                            g.addOtherPlayer(100, 100, 0, client_begin(args[1]));
+                            SDL_CreateThread(receive_packets, "Network", &g);
+                        }
+                        state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
+                    case STATE_GAMEPLAY: 
+                        g.step(keyboard);
+                        g.draw();
+                        break;
+                        }
+                        //Update screen
+                        SDL_GL_SwapWindow(gWindow);
+                        if (SDL_GetTicks() < endTime) {
+                            //Sleep the remaining frame time
+                            SDL_Delay(endTime-SDL_GetTicks());
+                        }
+                        else {
+                            //std::cout << SDL_GetTicks()-endTime << "\n";
+                    }
             }
         }
     }
