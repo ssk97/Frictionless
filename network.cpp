@@ -12,7 +12,7 @@ IPaddress server_begin()
     socket = SDLNet_UDP_Open(PORT_NUMBER);
     if (socket == NULL)
     {
-	printf("Could not open socket.");
+	printf("Could not open socket: %s\n", SDLNet_GetError());
 	throw 8;
     }
     packet = SDLNet_AllocPacket(PACKET_SIZE);
@@ -32,6 +32,11 @@ IPaddress server_begin()
 IPaddress client_begin(char* hostname)
 {
     socket = SDLNet_UDP_Open(0);
+    if (socket == NULL)
+    {
+	printf("Could not open socket: %s\n", SDLNet_GetError());	
+	throw 445;
+    }
     SDLNet_ResolveHost(&addr, hostname, PORT_NUMBER);
     packet = SDLNet_AllocPacket(PACKET_SIZE);
     if (!packet)
