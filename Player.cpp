@@ -86,3 +86,9 @@ void ActivePlayer::input(bool right, bool left, bool up)
     right_prev = right;
     up_prev = up;
 }
+
+OtherPlayer::OtherPlayer(double x, double y, double angle, IPaddress ip)
+    	: Player(x, y, angle)
+{
+    ipAddr = ip;
+}

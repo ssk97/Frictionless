@@ -28,3 +28,8 @@ void GameLogic::draw()
 	rings.draw();
 	//if (other != NULL) other->draw();
 }
+
+void GameLogic::addOtherPlayer(double x, double y, double angle, IPaddress ip)
+{
+    others.push_back(OtherPlayer(x, y, angle, ip));
+}

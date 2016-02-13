@@ -208,18 +208,7 @@ int main(int argc, char* args[])
 			//Main loop flag
 			bool quit = false;
 			int state = STATE_BEGINGAME;
-			//Player p = Player(100, 100, 0);
-			//std::vector<Player> others;
-			if (argc == 2)
-			{
-				server_begin();
-				//others.push_back(Player(100,100,0));	
-			}
-			if (argc == 3)
-			{
-				client_begin(args[2]);
-				//others.push_back(Player(100,100,0));
-			}
+
 
 			rngGfx.seed(time(NULL));
 
@@ -237,32 +226,42 @@ int main(int argc, char* args[])
 			//While application is running
 			while (!quit)
 			{
-				endTime = endTime +17;
-				frame++;
-				if (frame % 3 == 0) endTime--;
-				//Handle events on queue
-				while (SDL_PollEvent(&e) != 0)
+			    endTime = endTime +17;
+			    frame++;
+			    if (frame % 3 == 0) endTime--;
+			    //Handle events on queue
+			    while (SDL_PollEvent(&e) != 0)
+			    {
+				//User requests quit
+				if (e.type == SDL_QUIT)
 				{
-					//User requests quit
-					if (e.type == SDL_QUIT)
-					{
-						quit = true;
-					}
+				    quit = true;
 				}
-				if (keyboard[SDL_SCANCODE_ESCAPE])
-					quit = true;
-				switch (state) {
-					case STATE_MENU: 
-						break;
-					case STATE_BEGINGAME:
-						rngGame.seed(time(NULL));
-						g = GameLogic();
-						state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
-					case STATE_GAMEPLAY: 
-						g.step(keyboard);
-						g.draw();
-						break;
+			    }
+			    if (keyboard[SDL_SCANCODE_ESCAPE])
+				quit = true;
+			    switch (state) {
+			    case STATE_MENU: 
+				break;
+			    case STATE_BEGINGAME:
+				if (argc == 2)
+				{
+				    server_begin();
+				    //others.push_back(Player(100,100,0));	
 				}
+				if (argc == 3)
+				{
+				    client_begin(args[2]);
+				    //others.push_back(Player(100,100,0));
+				}					    
+				rngGame.seed(time(NULL));
+				g = GameLogic();
+				state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
+			    case STATE_GAMEPLAY: 
+				g.step(keyboard);
+				g.draw();
+				break;
+			    }
 				//Update screen
 				SDL_GL_SwapWindow(gWindow);
 				if (SDL_GetTicks() < endTime) {

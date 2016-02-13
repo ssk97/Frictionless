@@ -21,8 +21,9 @@ public:
 	Uint8 left_prev, right_prev, up_prev; //It needs to be Uint8 to be sent over the wire.    
 };
 
-class OtherPlayer : Player
+class OtherPlayer : public Player
 {
 public:
+    OtherPlayer(double x, double y, double angle, IPaddress ip);
     IPaddress ipAddr;
 };
