@@ -12,10 +12,13 @@ public:
     double x, y, xspd, yspd, angle, aspd;
     Uint8 left_btn, right_btn, up_btn;
     Exhaust myExhaust;
+    int colorRed;
+
 };
 
 class ActivePlayer : public Player
 {
+public:
     using Player::Player;
 };
 

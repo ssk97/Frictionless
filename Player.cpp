@@ -6,6 +6,7 @@ Player::Player(double x2, double y2, double angle2)
     angle = angle2;
     xspd = yspd = aspd = 0;
     myExhaust = Exhaust();
+    this->colorRed = 0;
 }
 
 void Player::step()
@@ -44,7 +45,10 @@ void Player::draw()
     glTranslated(x, y, 0);
     glRotated(angle, 0, 0, 1);
 
-    glColor3f(0.0f, 1.0f, 0.0f); //green
+    if (this->colorRed)
+	glColor3f(1.0f, 0.0f, 0.0f);
+    else
+	glColor3f(0.0f, 1.0f, 0.0f);
     glBegin(GL_TRIANGLE_STRIP);
         glVertex2f(-10, -20);
         glVertex2f(0, 0);
@@ -85,4 +89,5 @@ OtherPlayer::OtherPlayer(double x, double y, double angle, IPaddress ip)
         : Player(x, y, angle)
 {
     ipAddr = ip;
+    this->colorRed = 1;
 }
