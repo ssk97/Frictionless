@@ -10,10 +10,5 @@ public:
 	void input(bool right, bool left, bool up);
 	double x, y, xspd, yspd, angle, aspd;
 
-	void setupDrawing();
-	GLuint setupGeometry();
-	GLuint setupVertexShader();
-	GLuint setupFragmentShader();
-	GLuint shaderProgram, vertexShader, fragmentShader, posAttrib, uniTrans, vbo, vao;
 };
 

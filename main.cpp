@@ -196,7 +196,6 @@ SDL_Texture* loadTexture(std::string path)
 	return newTexture;
 }
 
-glm::mat4 view;
 #define STATE_MENU 0
 #define STATE_GAMEPLAY 1
 int main(int argc, char* args[])
@@ -219,9 +218,11 @@ int main(int argc, char* args[])
 			bool quit = false;
 			int state = STATE_GAMEPLAY;
 			Player * p = new Player(100, 100, 0);
+			
+			glLoadIdentity();
+			glTranslated(-1, 1, 0);
+			glScaled(2.0 / SCREEN_WIDTH, -2.0 / SCREEN_HEIGHT, 1.0);
 
-			view = glm::translate(view, glm::vec3(-1, 1, 0));
-			view = glm::scale(view, glm::vec3(2.0 / SCREEN_WIDTH, -2.0 / SCREEN_HEIGHT, 1.0));
 			const Uint8 *keyboard = SDL_GetKeyboardState(NULL);
 			//Event handler
 			SDL_Event e;
