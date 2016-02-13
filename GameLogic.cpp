@@ -12,6 +12,7 @@ void GameLogic::step(const Uint8 *keyboard)
 {
 	player.input(keyboard[SDL_SCANCODE_RIGHT], keyboard[SDL_SCANCODE_LEFT], keyboard[SDL_SCANCODE_UP]);
 	player.step();
+	rings.step(player.x, player.y);
 	/*if (other != NULL)
 	{
 		other->step();
@@ -24,5 +25,6 @@ void GameLogic::draw()
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	player.draw();
+	rings.draw();
 	//if (other != NULL) other->draw();
 }
