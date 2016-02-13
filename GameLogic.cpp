@@ -14,7 +14,6 @@ void GameLogic::step(const Uint8 *keyboard)
     player.left_btn = keyboard[SDL_SCANCODE_LEFT];
     player.up_btn = keyboard[SDL_SCANCODE_UP];
     player.step();
-    rings.step(player.x, player.y);
     SDL_LockMutex(write_other_players);
     for(auto &p : others)
     {
@@ -28,8 +27,10 @@ void GameLogic::step(const Uint8 *keyboard)
         turns = 0;
     }
     turns++;
-    if (rings.thisRing < 20)
+    if (rings.thisRing < 20) {
         timeFlying++;
+        rings.step(player.x, player.y);
+    }
 }
 
 void GameLogic::draw()
@@ -41,8 +42,9 @@ void GameLogic::draw()
         p.draw();
     }
     SDL_UnlockMutex(write_other_players);
-    rings.draw();
-    //if (other != NULL) other->draw();
+    if (rings.thisRing < 20) {
+        rings.draw();
+    }
 }
 
 void GameLogic::addOtherPlayer(double x, double y, double angle, IPaddress ip)

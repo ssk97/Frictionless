@@ -334,6 +334,8 @@ int main(int argc, char* args[])
                             menu.draw_text(10, 300, "to menu");
                             if (keydown == SDL_SCANCODE_RETURN) {
                                 state = STATE_MENU;
+                                if (mode == M_CLIENT || mode == M_SERVER)
+                                    server_stop();
                                 //FREE STUFF
                             }
                         }
