@@ -3,6 +3,10 @@
 
 #define PACKET_SIZE 1024
 
+UDPsocket socket;
+UDPpacket* packet;
+IPaddress addr;
+
 void server_begin()
 {
     socket = SDLNet_UDP_Open(PORT_NUMBER);
