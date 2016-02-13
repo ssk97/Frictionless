@@ -1,9 +1,13 @@
+#pragma once
 #include <SDL_net.h>
 #define PORT_NUMBER 1028
 
-UDPsocket socket();
+UDPsocket socket;
+UDPpacket* packet;
+IPaddress addr;
 
-int server();
 void server_begin();
+void client_begin(char*);
+void receive_packets();
+void send_packet();
 
-int sendPacket(IPaddress, Uint8*, int, UDPsocket, UDPpacket*);

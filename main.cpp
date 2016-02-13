@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "Player.h"
 #include "GameLogic.h"
+#include "network.h"
 #include <vector>
 //Starts up SDL and creates window
 bool init();
@@ -225,10 +226,15 @@ int main(int argc, char* args[])
 			int state = STATE_GAMEPLAY;
 			Player p = Player(100, 100, 0);
 			std::vector<Player> others;
-			if (argc > 2)
+			if (argc == 2)
 			{
-				
+				server_begin();
 				others.push_back(Player(100,100,0));	
+			}
+			if (argc == 3)
+			{
+				client_begin(args[2]);
+				others.push_back(Player(100,100,0));
 			}
 			
 			glLoadIdentity();

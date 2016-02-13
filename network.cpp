@@ -3,45 +3,72 @@
 
 #define PACKET_SIZE 1024
 
-//Returns non-zero on failure
-int server()
+void server_begin()
 {
-    UDPsocket socket = SDLNet_UDP_Open(PORT_NUMBER);
+    socket = SDLNet_UDP_Open(PORT_NUMBER);
     if (socket == NULL)
     {
-	printf("Could not open socket.");
-	throw 8;
+		printf("Could not open socket.");
+		throw 8;
     }
-    UDPpacket* packet = SDLNet_AllocPacket(PACKET_SIZE);
-    int quit = 0;
-    while(!quit)
+    packet = SDLNet_AllocPacket(PACKET_SIZE);
+    int ready = 0;
+    while(!ready)
     {
-	if (SDLNet_UDP_Recv(socket, packet))
-	{
-	    //Stub.
-	    printf("We got a packet!\n");
-	    printf("%.*s\n", packet->len, packet->data);
+	    if(SDLNet_UDP_Recv(socket,packet))
+		{
+			//Do something with packet->data and packet->len
+			addr = packet->address;
+			ready = 1;
+		}
 	}
-    }
-    return 0;
+	return;
 }
 
-
-
-int sendPacket(IPaddress addr, Uint8* message, int messageLength, UDPsocket socket, UDPpacket *p)
+void client_begin(char* hostname)
 {
-    if (!p)
-    {
-	printf("Invalid packet.\n");
-	return -1;
-    }
-    p->address.host = addr.host;
-    p->address.port = PORT_NUMBER;
-    p->data = message;
-    p->len = messageLength;
+	socket = SDLNet_UDP_Open(0);
+	SDLNet_ResolveHost(&addr, hostname, PORT_NUMBER);
+	packet = SDLNet_AllocPacket(PACKET_SIZE);
+	if (!packet)
+	{
+		printf("Invalid packet.\n");
+		throw 15;
+	}
+	packet->address.host = addr.host;
+	packet->address.port = PORT_NUMBER;
+	//TODO: Transmit some real information over the wire.
+	packet->data = (Uint8*) "hi";
+	packet->len = 10;
 
-    int err = 0;
-    if (SDLNet_UDP_Send(socket, -1, p) == 0) err = -1;
+	if (SDLNet_UDP_Send(socket, -1, packet) == 0)
+	{
+		printf("Something went wrong. :(\n");
+		throw 4454;
+	}
+	return;
+}
 
-    return err;
+//This needs to be run in a seperate thread.
+void receive_packets()
+{
+	while(1)
+	{
+		if (SDLNet_UDP_Recv(socket,packet))
+		{
+			printf("We have a packet!");
+		}
+	}
+}
+
+void send_packet()
+{
+	packet->data = (Uint8*) "ho";
+	packet->len = 10;
+	if (SDLNet_UDP_Send(socket, -1, packet) == 0)
+	{
+		printf("Something went wrong. D:\n");
+		throw 44;
+	}
+	return;	
 }
