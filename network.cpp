@@ -53,8 +53,8 @@ IPaddress client_begin(char* hostname)
     write_packet->address.host = addr.host;
     write_packet->address.port = PORT_NUMBER;
     //TODO: Transmit some real information over the wire.
-    write_packet->data = (Uint8*) "hi";
-    write_packet->len = 200;
+    struct data_sent data = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    write_packet->len = sizeof(data);
 
     if (SDLNet_UDP_Send(socket, -1, write_packet) == 0)
     {
@@ -101,8 +101,8 @@ void send_packet(ActivePlayer* play)
     printf("Size of data: %i", sizeof(struct data_sent));
     if (SDLNet_UDP_Send(socket, -1, write_packet) == 0)
     {
-    printf("Something went wrong. D:\n");
-    throw 44;
+	printf("Something went wrong. D:\n");
+	throw 44;
     }
     return;    
 }
