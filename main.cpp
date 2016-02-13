@@ -141,11 +141,33 @@ bool initGL()
 
 bool loadMedia()
 {
-	//Loading success flag
-	bool success = true;
+	GLuint TextureID = 0;
 
 	//Nothing to load
 	return success;
+	// You should probably use CSurface::OnLoad ... ;)
+	//-- and make sure the Surface pointer is good!
+	SDL_Surface* Surface = IMG_Load("Button.png");
+	if (Surface == NULL)
+	{
+		std::cerr << "Unable to load image Button.png! SDL_image Error: " << IMG_GetError() << "\n";
+		return false;
+	}
+	glGenTextures(1, &TextureID);
+	glBindTexture(GL_TEXTURE_2D, TextureID);
+
+	int Mode = GL_RGB;
+
+	if (Surface->format->BytesPerPixel == 4) {
+		Mode = GL_RGBA;
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, Mode, Surface->w, Surface->h, 0, Mode, GL_UNSIGNED_BYTE, Surface->pixels);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	return true;
 }
 
 void close()
@@ -243,11 +265,24 @@ int main(int argc, char* args[])
 				quit = true;
 			    switch (state) {
 			    case STATE_MENU: 
+					glEnable(GL_TEXTURE_2D);
+					glColor3f(1.0f, 1.0f, 1.0f);
+					glBegin(GL_QUADS);
+					//glColor3d(1, 0, 0); 
+					glTexCoord2f(0.0f, 1.0f);
+					glVertex2f(100, 500);
+					glTexCoord2f(1.0f, 1.0f);
+					glVertex2f(740, 500);
+					glTexCoord2f(1.0f, 0.0f);
+					glVertex2f(740, 100);
+					glTexCoord2f(0.0f, 0.0f);
+					glVertex2f(100, 100);
+					glEnd();
 				break;
 			    case STATE_BEGINGAME:
 				rngGame.seed(time(NULL));
 				g = GameLogic();
-				g.write_other_players = SDL_CreateMutex();
+                g.write_other_players = SDL_CreateMutex();
 				if (argc == 2)
 				{
 				    //Server
@@ -259,7 +294,7 @@ int main(int argc, char* args[])
 				    //Client
 				    g.addOtherPlayer(100, 100, 0, client_begin(args[2]));
 				    SDL_CreateThread(receive_packets, "Network", &g);
-				}					    
+                }
 				state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
 			    case STATE_GAMEPLAY: 
 				g.step(keyboard);
