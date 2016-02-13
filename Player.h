@@ -1,13 +1,15 @@
 #pragma once
 #include "globals.h"
 #include "Exhaust.h"
+#include "Bumper.h"
 #include <SDL_net.h>
+#include <vector>
 class Player
 {
 public:
     Player(double x, double y, double angle);
     ~Player();
-    void step();
+    void step(std::vector<Bumper>* bumpers);
     void draw();
     double x, y, xspd, yspd, angle, aspd;
     Uint8 left_btn, right_btn, up_btn;

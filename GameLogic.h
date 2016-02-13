@@ -1,6 +1,7 @@
 #pragma once
 #include "globals.h"
 #include "Player.h"
+#include "Bumper.h"
 #include "RingMaster.h"
 #include "network.h"
 #include <vector>
@@ -15,6 +16,7 @@ public:
     ActivePlayer player;
     RingMaster rings;
     std::vector<Player> others;
+    std::vector<Bumper> bumpers;
     SDL_mutex* write_other_players;
     int multiplayer = 0;
     int turns = 0;
