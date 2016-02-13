@@ -47,7 +47,8 @@ bool init()
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 		//Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH*1.5, SCREEN_HEIGHT*1.5, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);// | SDL_WINDOW_FULLSCREEN);
+		gWindow = SDL_CreateWindow("Frictionless", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH*1.5, SCREEN_HEIGHT*1.5, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);// | SDL_WINDOW_FULLSCREEN);
+		SDLNet_Init();
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
