@@ -1,19 +1,13 @@
-/*This source code copyrighted by Lazy Foo' Productions (2004-2015)
-and may not be redistributed without written permission.*/
+/*Much of the code in this file was originally from Lazy Foo' Productions
+(http://lazyfoo.net/)*/
 
-//Using SDL, SDL_image, standard IO, math, and strings
-#include <SDL.h>
-#include <SDL_image.h>
-#include <stdio.h>
-#include <string>
-#include <cmath>
-
-//Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-
+#include "globals.h"
+#include "Player.h"
 //Starts up SDL and creates window
 bool init();
+
+//Loads individual image as texture
+SDL_Texture* loadTexture(std::string path);
 
 //Loads media
 bool loadMedia();
@@ -21,14 +15,13 @@ bool loadMedia();
 //Frees media and shuts down SDL
 void close();
 
-//Loads individual image as texture
-SDL_Texture* loadTexture(std::string path);
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
 
 //The window renderer
 SDL_Renderer* gRenderer = NULL;
+
 
 bool init()
 {
@@ -132,7 +125,8 @@ SDL_Texture* loadTexture(std::string path)
 
 	return newTexture;
 }
-
+#define STATE_MENU 0
+#define STATE_GAMEPLAY 1
 int main(int argc, char* args[])
 {
 	//Start up SDL and create window
@@ -151,13 +145,17 @@ int main(int argc, char* args[])
 		{
 			//Main loop flag
 			bool quit = false;
-
+			int state = STATE_GAMEPLAY;
+			Player * p = new Player(100, 100, 0);
 			//Event handler
 			SDL_Event e;
-
+			unsigned int frame = 0;
 			//While application is running
 			while (!quit)
 			{
+				unsigned int endTime = SDL_GetTicks()+17;
+				frame++;
+				if (frame % 3 == 0) endTime--;
 				//Handle events on queue
 				while (SDL_PollEvent(&e) != 0)
 				{
@@ -167,34 +165,50 @@ int main(int argc, char* args[])
 						quit = true;
 					}
 				}
+				switch (state) {
+				case STATE_MENU: {
+					//Clear screen
+					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+					SDL_RenderClear(gRenderer);
 
-				//Clear screen
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-				SDL_RenderClear(gRenderer);
+					//Render red filled quad
+					SDL_Rect fillRect = { SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
+					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
+					SDL_RenderFillRect(gRenderer, &fillRect);
 
-				//Render red filled quad
-				SDL_Rect fillRect = { SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-				SDL_RenderFillRect(gRenderer, &fillRect);
+					//Render green outlined quad
+					SDL_Rect outlineRect = { SCREEN_WIDTH / 6, SCREEN_HEIGHT / 6, SCREEN_WIDTH * 2 / 3, SCREEN_HEIGHT * 2 / 3 };
+					SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF);
+					SDL_RenderDrawRect(gRenderer, &outlineRect);
 
-				//Render green outlined quad
-				SDL_Rect outlineRect = { SCREEN_WIDTH / 6, SCREEN_HEIGHT / 6, SCREEN_WIDTH * 2 / 3, SCREEN_HEIGHT * 2 / 3 };
-				SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF);
-				SDL_RenderDrawRect(gRenderer, &outlineRect);
+					//Draw blue horizontal line
+					SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, 0xFF);
+					SDL_RenderDrawLine(gRenderer, 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2);
 
-				//Draw blue horizontal line
-				SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, 0xFF);
-				SDL_RenderDrawLine(gRenderer, 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2);
-
-				//Draw vertical line of yellow dots
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0x00, 0xFF);
-				for (int i = 0; i < SCREEN_HEIGHT; i += 4)
-				{
-					SDL_RenderDrawPoint(gRenderer, SCREEN_WIDTH / 2, i);
+					//Draw vertical line of yellow dots
+					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0x00, 0xFF);
+					for (int i = 0; i < SCREEN_HEIGHT; i += 4)
+					{
+						SDL_RenderDrawPoint(gRenderer, SCREEN_WIDTH / 2, i);
+					}
 				}
-
+						break;
+				case STATE_GAMEPLAY: {
+					p->step();
+					//Clear screen
+					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+					SDL_RenderClear(gRenderer);
+					p->draw();
+				}
+						break;
+				}
 				//Update screen
 				SDL_RenderPresent(gRenderer);
+				if (SDL_GetTicks() < endTime) {
+					//Sleep the remaining frame time
+					SDL_Delay(endTime-SDL_GetTicks());
+				}
+				std::cout <<frame<<":"<< SDL_GetTicks()<<"\n";
 			}
 		}
 	}
