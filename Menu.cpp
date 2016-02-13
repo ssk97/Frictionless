@@ -51,6 +51,10 @@ void draw_char(double x, double y, char c) {
     if (id != -1) {
         double charx = (id % 9)*texw;
         double chary = (id / 9)*texh;
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glEnable(GL_TEXTURE_2D);
         glColor3f(1.0f, 1.0f, 1.0f);
         glBegin(GL_QUADS);
@@ -64,6 +68,7 @@ void draw_char(double x, double y, char c) {
         glVertex2f(x, y);
         glEnd();
         glDisable(GL_TEXTURE_2D);
+        glDisable(GL_BLEND);
     }
 }
 void draw_text(double x, double y, char* arr) {
@@ -73,23 +78,64 @@ void draw_text(double x, double y, char* arr) {
         i++;
     }
 }
+bool bbox(double x, double y, double x1, double y1, double w, double h) {
+    return ((x >= x1 && x <= x1 + w) && (y >= y1 && y <= y1 + h));
+}
 int Menu::step(Sint32 mouseX, Sint32 mouseY, bool clicked){//returns mode if changed, 0 if no change
-    if (clicked) {
-        if (mouseY < 300)
-            return M_SINGLEPLAYER;
-        else if (mouseY > 450)
-            return M_SERVER;
-        else
+    switch (substate) {
+        case s_main:
+            if (clicked) {
+                if (bbox(mouseX, mouseY, 100, 100, w * 13, h)) {
+                    return M_SINGLEPLAYER;
+                }
+                if (bbox(mouseX, mouseY, 100, 300, w * 11, h)) {
+                    substate = s_clientIP;
+                }
+                if (bbox(mouseX, mouseY, 100, 500, w * 11, h)) {
+                    return M_SERVER;
+                }
+            }
+            break;
+        case s_clientIP:
+            //if (tmpip)
             return M_CLIENT;
     }
     return 0;
 }
-void Menu::draw(Sint32 mouseX, Sint32 mouseY) {
-    draw_text(100, 100, "Single Player");
-    draw_text(100, 300, "Client Game");
-    draw_text(100, 500, "Server Game");
+void draw_round_rect(double x, double y, double w, double h, Sint32 mouseX, Sint32 mouseY) {
+    double r = h / 2.;
+    glBegin(GL_TRIANGLE_FAN);
+    if (bbox(mouseX, mouseY, x, y, w, h)) {
+        glColor3f(0.4f, 0.4f, 0.4f);
+    } else {
+        glColor3f(0.0f, 0.0f, 0.0f);
+    }
+    glVertex2f(x + w/2, y + h/2);
+    if (bbox(mouseX, mouseY, x, y, w, h)) {
+        glColor3f(0.8f, 0.8f, 0.8f);
+    }
+    else {
+        glColor3f(0.6f, 0.6f, 0.6f);
+    }
+    glVertex2f(x+r, y);
+    for (int i = 0; i <= 18; i++) {
+        glVertex2f(x + w - r-xdir(i * 10, r), y + h/2 - ydir(i * 10, r));
+    }
+    for (int i = 18; i <= 36; i++) {
+        glVertex2f(x + r - xdir(i * 10, r), y + h / 2 - ydir(i * 10, r));
+    }
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
 }
-
-void draw_round_rect(double x, double y, double w, double h) {
-
+void Menu::draw(Sint32 mouseX, Sint32 mouseY) {
+    switch (substate) {
+        case s_main:
+            draw_round_rect(100, 100, w * 13, h, mouseX, mouseY);
+            draw_text(100, 100, "Single Player");
+            draw_round_rect(100, 300, w * 11, h, mouseX, mouseY);
+            draw_text(100, 300, "Client Game");
+            draw_round_rect(100, 500, w * 11, h, mouseX, mouseY);
+            draw_text(100, 500, "Server Game");
+            break;
+    }
 }
