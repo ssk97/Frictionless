@@ -5,38 +5,43 @@
 
 #define PACKET_SIZE 10000
 
-UDPsocket socket;
+UDPsocket socket = NULL;
 UDPpacket* read_packet;
 UDPpacket* write_packet;
 IPaddress addr;
 
-IPaddress server_begin(uint32_t* rng_seed)
+//Returns 1 when a connection is made, 0 otherwise
+int server_begin(uint32_t* rng_seed, IPaddress* address)
 {
-    socket = SDLNet_UDP_Open(PORT_NUMBER);
     if (socket == NULL)
     {
-	printf("Could not open socket: %s\n", SDLNet_GetError());
-	throw 8;
-    }
-    read_packet = SDLNet_AllocPacket(PACKET_SIZE);
-    write_packet = SDLNet_AllocPacket(PACKET_SIZE);
-    int ready = 0;
-    while(!ready)
-    {
-	if(SDLNet_UDP_Recv(socket,read_packet))
+	socket = SDLNet_UDP_Open(PORT_NUMBER);
+	if (socket == NULL)
 	{
-	    printf("Got opening connection");
-
-	    struct data_sent *data = (struct data_sent*) read_packet->data;
-	    
-	    addr = read_packet->address;
-	    write_packet->address.host = read_packet->address.host;
-	    write_packet->address.port = read_packet->address.port;
-	    *rng_seed = data->rng_seed;
-	    ready = 1;
+	    printf("Could not open socket: %s\n", SDLNet_GetError());
+	    throw 8;
 	}
+	read_packet = SDLNet_AllocPacket(PACKET_SIZE);
+	write_packet = SDLNet_AllocPacket(PACKET_SIZE);
     }
-    return read_packet->address;
+    
+    if(SDLNet_UDP_Recv(socket,read_packet))
+    {
+	printf("Got opening connection");
+
+	struct data_sent *data = (struct data_sent*) read_packet->data;
+	    
+	addr = read_packet->address;
+	write_packet->address.host = read_packet->address.host;
+	write_packet->address.port = read_packet->address.port;
+	*rng_seed = data->rng_seed;
+	*address = read_packet->address;
+	return 1;
+    }
+    else
+    {
+	return 0;
+    }
 }
 
 IPaddress client_begin(char* hostname, uint32_t rng_seed)

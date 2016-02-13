@@ -4,7 +4,7 @@
 #include <cstdint>
 #define PORT_NUMBER 1028
 
-IPaddress server_begin(uint32_t* rng_seed);
+int server_begin(uint32_t* rng_seed, IPaddress* address);
 IPaddress client_begin(char*, uint32_t);
 int receive_packets(void* ignored);
 void send_packet(ActivePlayer* play);

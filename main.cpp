@@ -6,6 +6,7 @@
 #include "network.h"
 #include "Menu.h"
 #include <vector>
+#include <cstdint>
 //Starts up SDL and creates window
 bool init();
 
@@ -212,7 +213,8 @@ bool clicked;
 
 #define STATE_MENU 0
 #define STATE_BEGINGAME 1
-#define STATE_GAMEPLAY 2
+#define STATE_WAIT_FOR_CLIENT 2
+#define STATE_GAMEPLAY 3
 #include <time.h>
 int main(int argc, char* args[])
 {
@@ -280,33 +282,37 @@ int main(int argc, char* args[])
                 Menu menu = Menu();
                 switch (state) {
                     case STATE_MENU:
+                        g = GameLogic();
+                        g.write_other_players = SDL_CreateMutex();		  
                         mode = menu.step( mouseX,  mouseY,  clicked);//returns mode if changed, 0 if no change
                         if (mode != 0) {
                             std::cout << mode;
-                            state = STATE_BEGINGAME;
+
+			    state = (mode == M_SERVER) ? STATE_WAIT_FOR_CLIENT : STATE_BEGINGAME;
                         }
                         menu.draw( mouseX,  mouseY);
                     break;
+		    case STATE_WAIT_FOR_CLIENT:
+			uint32_t rng_seed;
+			IPaddress ip;
+			if (server_begin(&rng_seed, &ip))
+			{
+			    state = STATE_BEGINGAME;
+			    g.addOtherPlayer(100, 100, 0, ip);
+			    rngGame.seed(rng_seed);
+			    SDL_CreateThread(receive_packets, "Network", &g);
+			}
+		    break;
                     case STATE_BEGINGAME:
-                        g = GameLogic();
-                        g.write_other_players = SDL_CreateMutex();
-                        if (mode == M_SERVER)
-                        {
-                            //Server
-                            uint32_t rng_seed;
-                            g.addOtherPlayer(100, 100, 0, server_begin(&rng_seed));
-                            rngGame.seed(rng_seed);
-                            SDL_CreateThread(receive_packets, "Network", &g);
-                        }
-                        else if (mode == M_CLIENT)
+                        if (mode == M_CLIENT)
                         {
                             //Client
-                            uint32_t rng_seed = 8;
+                            uint32_t rng_seed = time(NULL);
                             g.addOtherPlayer(100, 100, 0, client_begin(args[1], rng_seed));
                             rngGame.seed(rng_seed);
                             SDL_CreateThread(receive_packets, "Network", &g);
                         }
-                        else
+                        if (mode == M_SINGLEPLAYER)
                         {
                             rngGame.seed(time(NULL));		    
                         }
