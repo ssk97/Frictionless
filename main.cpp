@@ -231,6 +231,7 @@ int main(int argc, char* args[])
                 frame++;
                 if (frame % 3 == 0) endTime--;
                 //Handle events on queue
+                SDL_Scancode keydown = SDL_SCANCODE_UNKNOWN;
                 while (SDL_PollEvent(&e) != 0)
                 {
                     //User requests quit
@@ -249,39 +250,44 @@ int main(int argc, char* args[])
                         if (e.button.button == SDL_BUTTON_LEFT)
                             clicked = (e.button.state == SDL_PRESSED);
                     }
+                    if (e.type == SDL_KEYDOWN) {
+                        keydown = e.key.keysym.scancode;
+                    }
                 }
                 if (keyboard[SDL_SCANCODE_ESCAPE]) {
                     quit = true;
                 }
+                //Clear screen
+                glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+                glClear(GL_COLOR_BUFFER_BIT);
                 switch (state) {
                     case STATE_MENU:
                         g = GameLogic();
                         g.write_other_players = SDL_CreateMutex();		  
-                        mode = menu.step( mouseX,  mouseY,  clicked);//returns mode if changed, 0 if no change
+                        mode = menu.step( mouseX,  mouseY,  clicked, keyboard, keydown);//returns mode if changed, 0 if no change
                         if (mode != 0) {
                             std::cout << mode;
-
-			    state = (mode == M_SERVER) ? STATE_WAIT_FOR_CLIENT : STATE_BEGINGAME;
+			                state = (mode == M_SERVER) ? STATE_WAIT_FOR_CLIENT : STATE_BEGINGAME;
                         }
                         menu.draw( mouseX,  mouseY);
-                    break;
-		    case STATE_WAIT_FOR_CLIENT:
-			uint32_t rng_seed;
-			IPaddress ip;
-			if (server_begin(&rng_seed, &ip))
-			{
-			    state = STATE_BEGINGAME;
-			    g.addOtherPlayer(100, 100, 0, ip);
-			    rngGame.seed(rng_seed);
-			    SDL_CreateThread(receive_packets, "Network", &g);
-			}
-		    break;
+                        break;
+		            case STATE_WAIT_FOR_CLIENT:
+			            uint32_t rng_seed;
+			            IPaddress ip;
+			            if (server_begin(&rng_seed, &ip))
+			            {
+			                state = STATE_BEGINGAME;
+			                g.addOtherPlayer(100, 100, 0, ip);
+			                rngGame.seed(rng_seed);
+			                SDL_CreateThread(receive_packets, "Network", &g);
+			            }
+		                break;
                     case STATE_BEGINGAME:
                         if (mode == M_CLIENT)
                         {
                             //Client
                             uint32_t rng_seed = time(NULL);
-                            g.addOtherPlayer(100, 100, 0, client_begin(args[1], rng_seed));
+                            g.addOtherPlayer(100, 100, 0, client_begin(menu.tmpip, rng_seed));
                             rngGame.seed(rng_seed);
                             SDL_CreateThread(receive_packets, "Network", &g);
                         }
