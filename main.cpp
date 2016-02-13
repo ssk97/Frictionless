@@ -302,6 +302,7 @@ int main(int argc, char* args[])
                         g.draw();
                         break;
                     }
+                menu.drawGrid();
                 //Update screen
                 SDL_GL_SwapWindow(gWindow);
                 if (SDL_GetTicks() < endTime) {
