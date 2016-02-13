@@ -301,7 +301,7 @@ int main(int argc, char* args[])
                         else if (mode == M_CLIENT)
                         {
                             //Client
-                            uint32_t rng_seed = time(NULL);
+                            uint32_t rng_seed = 8;
                             g.addOtherPlayer(100, 100, 0, client_begin(args[1], rng_seed));
                             rngGame.seed(rng_seed);
                             SDL_CreateThread(receive_packets, "Network", &g);

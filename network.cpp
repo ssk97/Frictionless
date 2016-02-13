@@ -60,7 +60,8 @@ IPaddress client_begin(char* hostname, uint32_t rng_seed)
     //TODO: Transmit some real information over the wire.
     struct data_sent data = {0, 0, 0, 0, 0, 0, 0, 0, 0, rng_seed};
     write_packet->len = sizeof(data);
-
+    write_packet->data = (Uint8*) &data;
+    
     if (SDLNet_UDP_Send(socket, -1, write_packet) == 0)
     {
 	printf("Something went wrong: %s\n", SDLNet_GetError());
