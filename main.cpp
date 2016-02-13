@@ -255,8 +255,8 @@ int main(int argc, char* args[])
 					case STATE_MENU: 
 						break;
 					case STATE_GAMEPLAY: 
-						gameLogicLoop(&p, keyboard);
-						drawLoop(&p);
+						gameLogicLoop(&p, NULL, keyboard);
+						drawLoop(&p, NULL);
 						break;
 				}
 				//Update screen
