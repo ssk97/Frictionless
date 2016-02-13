@@ -28,8 +28,10 @@ void GameLogic::step(const Uint8 *keyboard)
         turns = 0;
     }
     turns++;
-    if (rings.thisRing < 20)
+    if (rings.thisRing < 20) {
         timeFlying++;
+        rings.step(player.x, player.y);
+    }
 }
 
 void GameLogic::draw()
@@ -42,6 +44,9 @@ void GameLogic::draw()
         p.draw();
     }
     SDL_UnlockMutex(write_other_players);
+    if (rings.thisRing < 20) {
+        rings.draw();
+    }
     for (auto &b : bumpers)
     {
 	b.draw();
