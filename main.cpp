@@ -249,8 +249,8 @@ int main(int argc, char* args[])
 						p->input(keyboard[SDL_SCANCODE_RIGHT], keyboard[SDL_SCANCODE_LEFT], keyboard[SDL_SCANCODE_UP]);
 						p->step();
 						//Clear screen
-						SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-						SDL_RenderClear(gRenderer);
+						glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+						glClear(GL_COLOR_BUFFER_BIT);
 						p->draw();
 						break;
 				}

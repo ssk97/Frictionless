@@ -3,7 +3,7 @@ void Player::setupDrawing() {
 	vao = 0;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);//this is bound to the geometry setup in the next call
-	vbo = setupGeometry();
+	setupGeometry();//sets up vbo
 
 	shaderProgram = glCreateProgram();
 	vertexShader = setupVertexShader();
@@ -22,7 +22,6 @@ void Player::setupDrawing() {
 	glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(view));
 }
 GLuint Player::setupGeometry() {
-	GLuint vbo;
 	const int count = 40;
 	float vertices[count * 2 + 8] = {
 		10, 20,
@@ -109,13 +108,11 @@ void Player::draw()
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	GLint uniTrans = glGetUniformLocation(shaderProgram, "trans");
-	glUseProgram(shaderProgram);
 
-	glm::mat4 trans;
+	glm::mat4 trans, rot;
 	trans = glm::translate(trans, glm::vec3((float)x, (float)y, 0.0));
-	glm::mat4 rot;
 	rot = glm::rotate(trans, (float)angle, glm::vec3(0.0, 0.0, 1.0));
-	glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(trans*rot));
+	glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(rot));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
 	glDrawArrays(GL_TRIANGLE_FAN, 8, 48);
 
@@ -123,4 +120,11 @@ void Player::draw()
 
 Player::~Player()
 {
+	glDeleteProgram(shaderProgram);
+	glDeleteShader(fragmentShader);
+	glDeleteShader(vertexShader);
+
+	glDeleteBuffers(1, &vbo);
+
+	glDeleteVertexArrays(1, &vao);
 }
