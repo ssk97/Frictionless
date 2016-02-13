@@ -69,7 +69,7 @@ IPaddress client_begin(char* hostname)
 //This needs to be run in a seperate thread.
 int receive_packets(void* gameLogic)
 {
-    printf("Starting to recieve packets");
+    printf("Starting to recieve packets.\n");
     while(1)
     {
     SDL_Delay(1);
@@ -81,7 +81,6 @@ int receive_packets(void* gameLogic)
     }
     if (recv == 1)
     {
-        printf("Got one!");
         struct data_sent *data = (struct data_sent*) read_packet->data;
         GameLogic *g = (GameLogic*) gameLogic;
         SDL_LockMutex(g->write_other_players);
@@ -100,7 +99,6 @@ void send_packet(ActivePlayer* play)
     struct data_sent data = {play->x, play->y, play->xspd, play->yspd, play->angle, play->aspd, play->left_btn, play->right_btn, play->up_btn};
     write_packet->data = (Uint8*) &data;
     write_packet->len = 80;
-    printf("Size of data: %i", sizeof(struct data_sent));
     if (SDLNet_UDP_Send(socket, -1, write_packet) == 0)
     {
 	printf("Something went wrong. D:\n");
