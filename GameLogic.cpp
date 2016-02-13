@@ -3,6 +3,7 @@ GameLogic::GameLogic() : player(100, 100, 0)
 {
     //player = Player(100, 100, 0);
     //Player other = NULL;
+    bumpers.push_back(Bumper(300, 300, 25));
 }
 
 GameLogic::~GameLogic()
@@ -13,12 +14,12 @@ void GameLogic::step(const Uint8 *keyboard)
     player.right_btn = keyboard[SDL_SCANCODE_RIGHT];
     player.left_btn = keyboard[SDL_SCANCODE_LEFT];
     player.up_btn = keyboard[SDL_SCANCODE_UP];
-    player.step();
+    player.step(&bumpers);
     rings.step(player.x, player.y);
     SDL_LockMutex(write_other_players);
     for(auto &p : others)
     {
-        p.step();
+        p.step(&bumpers);
     }
     SDL_UnlockMutex(write_other_players);
 
@@ -34,6 +35,7 @@ void GameLogic::step(const Uint8 *keyboard)
 
 void GameLogic::draw()
 {
+
     player.draw();
     SDL_LockMutex(write_other_players);
     for(auto &p : others)
@@ -41,7 +43,12 @@ void GameLogic::draw()
         p.draw();
     }
     SDL_UnlockMutex(write_other_players);
+    for (auto &b : bumpers)
+    {
+	b.draw();
+    }        
     rings.draw();
+
     //if (other != NULL) other->draw();
 }
 

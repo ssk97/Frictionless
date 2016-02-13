@@ -13,7 +13,7 @@ double fRandGFX(double fMin, double fMax)
     std::uniform_real_distribution<double> dis(0, 1.0);
     return fMin + dis(rngGfx) * (fMax - fMin);
 }
-void Player::step()
+void Player::step(std::vector<Bumper>* bumpers)
 {
     if (right_btn)
 	aspd += .15;
@@ -38,6 +38,12 @@ void Player::step()
     if (y < 0 || y > SCREEN_HEIGHT) {
         y -= yspd;
         yspd *= -1;
+    }
+    for (auto &b : *bumpers)
+    {
+	int colision = b.calculateCollision(x, y);
+	if (colision == BUMPER_X_COLLISION) xspd *= -1;
+	if (colision == BUMPER_Y_COLLISION) yspd *= -1;	
     }
 
     myExhaust.step();

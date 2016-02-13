@@ -16,7 +16,10 @@ int Bumper::calculateCollision(double playerX, double playerY)
     }
     else
     {
-	return BUMPER_X_COLLISION;
+	if (abs(playerX - (x + width / 2)) < abs(playerY - (y + width / 2)))
+	    return BUMPER_X_COLLISION;
+	else
+	    return BUMPER_Y_COLLISION;
     }
 }
 
@@ -26,9 +29,9 @@ void Bumper::draw()
     glColor3f(1.0f, 0.75f, .8f);
     glBegin(GL_QUADS);                      // Draw A Quad
     glVertex3f(x, y, 0.0f);              // Top Left
-    glVertex3f(x, y + width, 0.0f);              // Top Right
+    glVertex3f(x + width, y, 0.0f);              // Top Right
     glVertex3f(x + width, y + width, 0.0f);              // Bottom Right
-    glVertex3f(x + width,y + width, 0.0f);              // Bottom Left
+    glVertex3f(x,y + width, 0.0f);              // Bottom Left
     glEnd();
     glPopMatrix();
      
