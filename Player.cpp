@@ -48,13 +48,23 @@ void Player::draw()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glBegin(GL_TRIANGLE_FAN);
-	glColor3f(0.0f, 0.0f, 0.2f); //dark blue
+	glColor3f(0.0f, 0.0f, xdir(frame*4,0.4)+.4); //pulsing blue
 	glVertex2f(0, 0);
 	glColor3f(0.0f, 0.0f, 1.0f); //blue
 	for (int i = 0; i <= 36; i++) {
 		glVertex2f(xdir(i * 10, 20), ydir(i * 10, 20));
 	}
-	glEnd();//ship
+	glEnd();//shield
+
+	glBegin(GL_TRIANGLE_STRIP);
+	for (int i = 0; i <= 36; i++) {
+		glColor3f(0.0f, 0.0f, xdir(frame * 4, 0.2) + .6); //pulsing blue
+		glVertex2f(xdir(i * 10, 20), ydir(i * 10, 20));
+		glColor3f(0.0f, 0.0f, 0.0f); //pulsing blue
+		glVertex2f(xdir(i * 10, 30), ydir(i * 10, 30));
+	}
+	glEnd();//shield glow
+
 	glDisable(GL_BLEND);
 
 

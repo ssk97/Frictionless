@@ -13,9 +13,7 @@
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
 
-//The window we'll be rendering to
-extern SDL_Window* gWindow;
-extern SDL_GLContext gContext;
+extern unsigned long frame;
 
 extern void checkShader(GLuint shader);
 extern void checkErrors();
