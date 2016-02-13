@@ -18,8 +18,8 @@ extern unsigned long frame;
 extern std::mt19937 rngGame, rngGfx;
 
 static double xdir(double angle, double distance) {
-	return -sin((angle * M_PI) / 180)*distance;
+    return -sin((angle * M_PI) / 180)*distance;
 }
 static double ydir(double angle, double distance) {
-	return cos((angle * M_PI) / 180)*distance;
+    return cos((angle * M_PI) / 180)*distance;
 }

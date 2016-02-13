@@ -1,6 +1,5 @@
 #pragma once
 #include <SDL_net.h>
-#pragma once
 #include "Player.h"
 #define PORT_NUMBER 1028
 
