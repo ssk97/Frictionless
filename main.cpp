@@ -143,8 +143,6 @@ bool loadMedia()
 {
 	GLuint TextureID = 0;
 
-	//Nothing to load
-	return 1;
 	// You should probably use CSurface::OnLoad ... ;)
 	//-- and make sure the Surface pointer is good!
 	SDL_Surface* Surface = IMG_Load("Button.png");
