@@ -23,9 +23,10 @@ int server()
 	    printf("We got a packet!");
 	}
     }
+    return 0;
 }
 
-int sendPacket(IPaddress addr, Unit8* message, int messageLength, UDPsocket socket)
+int sendPacket(IPaddress addr, Uint8* message, int messageLength, UDPsocket socket)
 {
     UDPpacket *p = SDLNet_AllocPacket(PACKET_SIZE);
     p->address.host = addr.host;
@@ -34,7 +35,7 @@ int sendPacket(IPaddress addr, Unit8* message, int messageLength, UDPsocket sock
     p->len = messageLength;
 
     int err = 0;
-    if (SDL_Net_UDP_Send(socket, -1, p) == 0) err = -1;
+    if (SDLNet_UDP_Send(socket, -1, p) == 0) err = -1;
 
     SDLNet_FreePacket(p);
     return err;
