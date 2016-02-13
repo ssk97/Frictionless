@@ -1,6 +1,7 @@
 #pragma once
 #include "globals.h"
 #define MAX_PARTICLES 2000
+#define LIFESPAN 10
 struct particle
 {
 	int framelife;

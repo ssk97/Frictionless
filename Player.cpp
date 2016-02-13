@@ -5,6 +5,7 @@ Player::Player(double x2, double y2, double angle2)
 	y = y2;
 	angle = angle2;
 	xspd = yspd = aspd = 0;
+	myExhaust = Exhaust();
 }
 void Player::input(bool right, bool left, bool up)
 {
@@ -15,6 +16,11 @@ void Player::input(bool right, bool left, bool up)
 	if (up) {
 		xspd += xdir(angle, .05);
 		yspd += ydir(angle, .05);
+		myExhaust.add(x, y, xdir(angle,-5)+xspd, ydir(angle, -5)+yspd);
+		myExhaust.add(x, y, xdir(angle+4, -4.8) + xspd, ydir(angle+4, -4.8) + yspd);
+		myExhaust.add(x, y, xdir(angle+4, -5.2) + xspd, ydir(angle+4, -5.2) + yspd);
+		myExhaust.add(x, y, xdir(angle - 4, -4.8) + xspd, ydir(angle - 4, -4.8) + yspd);
+		myExhaust.add(x, y, xdir(angle - 4, -5.2) + xspd, ydir(angle - 4, -5.2) + yspd);
 	}
 }
 void Player::step()
@@ -30,9 +36,11 @@ void Player::step()
 		y -= yspd;
 		yspd *= -1;
 	}
+	myExhaust.step();
 }
 void Player::draw()
 {
+	myExhaust.draw();
 	glPushMatrix();
 	glTranslated(x, y, 0);
 	glRotated(angle, 0, 0, 1);
@@ -66,7 +74,6 @@ void Player::draw()
 	glEnd();//shield glow
 
 	glDisable(GL_BLEND);
-
 
 	glPopMatrix();
 }

@@ -64,7 +64,7 @@ bool init()
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 		//Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
@@ -224,11 +224,11 @@ int main(int argc, char* args[])
 			bool quit = false;
 			int state = STATE_GAMEPLAY;
 			Player p = Player(100, 100, 0);
-			Player other;
+			//Player other;
 			if (argc < 2)
 			{
 				printf("Single player.\n");
-				other = NULL;
+				//other = NULL;
 			}
 			
 			
@@ -273,7 +273,7 @@ int main(int argc, char* args[])
 					SDL_Delay(endTime-SDL_GetTicks());
 				}
 				else {
-					std::cout << SDL_GetTicks()-endTime << "\n";
+					std::cout << SDL_GetTicks() <<" "<<endTime << "\n";
 				}
 			}
 		}

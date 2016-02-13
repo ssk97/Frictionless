@@ -1,5 +1,6 @@
 #pragma once
 #include "globals.h"
+#include "Exhaust.h"
 class Player
 {
 public:
@@ -9,6 +10,6 @@ public:
 	void draw();
 	void input(bool right, bool left, bool up);
 	double x, y, xspd, yspd, angle, aspd;
-
+	Exhaust myExhaust;
 };
 

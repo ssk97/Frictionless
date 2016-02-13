@@ -125,11 +125,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Exhaust.cpp" />
+    <ClCompile Include="GameLogic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Exhaust.h" />
+    <ClInclude Include="GameLogic.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
