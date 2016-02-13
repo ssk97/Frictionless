@@ -23,6 +23,7 @@ IPaddress server_begin()
     {
 	if(SDLNet_UDP_Recv(socket,packet))
 	{
+	    printf("Got opening connection");
 	    //Do something with packet->data and packet->len
 	    addr = packet->address;
 	    ready = 1;

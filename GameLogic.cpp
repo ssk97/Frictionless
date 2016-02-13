@@ -34,10 +34,12 @@ void GameLogic::draw()
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	player.draw();
+	SDL_LockMutex(write_other_players);
 	for(auto &p : others)
 	{
 	    p.draw();
-	}	
+	}
+	SDL_UnlockMutex(write_other_players);
 	rings.draw();
 	//if (other != NULL) other->draw();
 }
