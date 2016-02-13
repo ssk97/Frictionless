@@ -310,6 +310,7 @@ int main(int argc, char* args[])
                         {
                             rngGame.seed(time(NULL));		    
                         }
+                        g.rings.init();
                         state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
                     case STATE_GAMEPLAY: 
                         g.step(keyboard);

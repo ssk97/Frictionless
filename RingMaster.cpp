@@ -12,6 +12,10 @@ bool distWithin(double x1, double y1, double x2, double y2, double dist)
 
 RingMaster::RingMaster()
 {
+}
+
+void RingMaster::init()
+{
     double lastx = 100, lasty = 100;
     for (int i = 0; i < RING_MAX; i++) {
         double x = lastx, y = lasty;
@@ -24,7 +28,6 @@ RingMaster::RingMaster()
         lasty = y;
     }
 }
-
 
 RingMaster::~RingMaster()
 {

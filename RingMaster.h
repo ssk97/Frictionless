@@ -14,6 +14,7 @@ public:
     ~RingMaster();
     void step(double x, double y);
     void draw();
+    void init();
     Ring rings[RING_MAX];
     int thisRing = 0;
 };
