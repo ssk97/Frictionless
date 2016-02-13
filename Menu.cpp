@@ -43,7 +43,40 @@ bool Menu::init() {
 
     return true;
 }
-void draw_char(double x, double y, char c) {
+void Menu::drawGrid() {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    for (double x = ((frame % 80)/2); x < SCREEN_WIDTH+20; x += 40) {
+        glBegin(GL_TRIANGLE_STRIP);
+        glColor3f(0.0f, 0.0f, 0.0f);
+        glVertex2f(x - 10, 0);
+        glVertex2f(x - 10, SCREEN_HEIGHT);
+        glColor3f(0.05f, 0.05f, xdir(frame * 4, 0.05) + .2); //pulsing blue
+        glVertex2f(x, 0);
+        glVertex2f(x, SCREEN_HEIGHT);
+
+        glColor3f(0.0f, 0.0f, 0.0f);
+        glVertex2f(x + 10, 0);
+        glVertex2f(x + 10, SCREEN_HEIGHT);
+        glEnd();//shield
+    }
+    for (double y = ((frame % 80) / 2); y < SCREEN_HEIGHT + 20; y += 40) {
+        glBegin(GL_TRIANGLE_STRIP);
+        glColor3f(0.0f, 0.0f, 0.0f);
+        glVertex2f(0, y-10);
+        glVertex2f(SCREEN_WIDTH,y-10);
+        glColor3f(0.05f, 0.05f, xdir(frame * 4, 0.05) + .2); //pulsing blue
+        glVertex2f(0, y);
+        glVertex2f(SCREEN_WIDTH, y);
+
+        glColor3f(0.0f, 0.0f, 0.0f);
+        glVertex2f(0, y+10);
+        glVertex2f(SCREEN_WIDTH, y+10);
+        glEnd();//shield
+    }
+    glDisable(GL_BLEND);
+}
+void Menu::draw_char(double x, double y, char c) {
     int id = -1;
     if (c >= '0' && c <= '9') id = c - '0';
     if (c >= 'A' && c <= 'Z') id = c - 'A' + 10;
@@ -72,7 +105,7 @@ void draw_char(double x, double y, char c) {
         glDisable(GL_BLEND);
     }
 }
-void draw_text(double x, double y, char* arr) {
+void Menu::draw_text(double x, double y, char* arr) {
     int i = 0;
     while (arr[i] != 0) {
         draw_char(x + i*w, y, arr[i]);

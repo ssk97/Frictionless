@@ -8,7 +8,11 @@ Player::Player(double x2, double y2, double angle2)
     myExhaust = Exhaust();
     this->colorRed = 0;
 }
-
+double fRandGFX(double fMin, double fMax)
+{
+    std::uniform_real_distribution<double> dis(0, 1.0);
+    return fMin + dis(rngGfx) * (fMax - fMin);
+}
 void Player::step()
 {
     if (right_btn)
@@ -19,10 +23,10 @@ void Player::step()
 	xspd += xdir(angle, .05);
 	yspd += ydir(angle, .05);
 	myExhaust.add(x, y, xdir(angle,-5)+xspd, ydir(angle, -5)+yspd);
-	myExhaust.add(x, y, xdir(angle+4, -4.8) + xspd, ydir(angle+4, -4.8) + yspd);
-	myExhaust.add(x, y, xdir(angle+4, -5.2) + xspd, ydir(angle+4, -5.2) + yspd);
-	myExhaust.add(x, y, xdir(angle - 4, -4.8) + xspd, ydir(angle - 4, -4.8) + yspd);
-	myExhaust.add(x, y, xdir(angle - 4, -5.2) + xspd, ydir(angle - 4, -5.2) + yspd);
+	myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -4.8) + xspd, ydir(angle + fRandGFX(-20, 20), -4.8) + yspd);
+	myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -5.2) + xspd, ydir(angle + fRandGFX(-20, 20), -5.2) + yspd);
+	myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -4.8) + xspd, ydir(angle + fRandGFX(-20, 20), -4.8) + yspd);
+	myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -5.2) + xspd, ydir(angle + fRandGFX(-20, 20), -5.2) + yspd);
     }        
     x += xspd;
     y += yspd;
@@ -49,11 +53,13 @@ void Player::draw()
 	glColor3f(1.0f, 0.0f, 0.0f);
     else
 	glColor3f(0.0f, 1.0f, 0.0f);
-    glBegin(GL_TRIANGLE_STRIP);
-        glVertex2f(-10, -20);
+    glBegin(GL_TRIANGLE_FAN);
         glVertex2f(0, 0);
+        glVertex2f(15, -20);
+        glVertex2f(10, 5);
         glVertex2f(0, 20);
-        glVertex2f(10, -20);
+        glVertex2f(-10, 5);
+        glVertex2f(-15, -20);
     glEnd();//ship
 
     glEnable(GL_BLEND);

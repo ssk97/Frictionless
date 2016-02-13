@@ -49,7 +49,7 @@ bool init()
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
         //Create window
-        gWindow = SDL_CreateWindow("Frictionless", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);// | SDL_WINDOW_FULLSCREEN);
+        gWindow = SDL_CreateWindow("Frictionless", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
         SDLNet_Init();
         if (gWindow == NULL)
         {
@@ -274,6 +274,8 @@ int main(int argc, char* args[])
 		            case STATE_WAIT_FOR_CLIENT:
 			            uint32_t rng_seed;
 			            IPaddress ip;
+                        menu.draw_text(80, 300, "Waiting for client");
+                        menu.draw_text(180, 400, "to connect");
 			            if (server_begin(&rng_seed, &ip))
 			            {
 			                state = STATE_BEGINGAME;
@@ -293,15 +295,25 @@ int main(int argc, char* args[])
                         }
                         if (mode == M_SINGLEPLAYER)
                         {
-                            rngGame.seed(time(NULL));		    
+                            rngGame.seed(time(NULL));
                         }
                         g.rings.init();
                         state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
                     case STATE_GAMEPLAY: 
                         g.step(keyboard);
                         g.draw();
+                        if (g.rings.thisRing >= 20) {
+                            menu.draw_text(10, 10, "You won. It took you");
+                            menu.draw_text(10, 110, const_cast<char *>((std::to_string(g.timeFlying)).c_str()));
+                            menu.draw_text(10, 200, "Press Enter to return to menu");
+                            if (keydown == SDL_SCANCODE_RETURN) {
+                                state = STATE_MENU;
+                                //FREE STUFF
+                            }
+                        }
                         break;
                     }
+                menu.drawGrid();
                 //Update screen
                 SDL_GL_SwapWindow(gWindow);
                 if (SDL_GetTicks() < endTime) {

@@ -13,6 +13,9 @@ public:
     int step(Sint32 mouseX, Sint32 mouseY, bool clicked, const Uint8 *keyboard, SDL_Scancode keypressed);//returns mode if changed, 0 if no change
     void draw(Sint32 mouseX, Sint32 mouseY);
     bool init();//load all the files into surfaces into openGL textures
+    void drawGrid();
+    void draw_char(double x, double y, char c);
+    void draw_text(double x, double y, char* arr);
     Menu();
     ~Menu();
     int substate = s_main;
