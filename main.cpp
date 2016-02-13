@@ -204,7 +204,8 @@ SDL_Texture* loadTexture(std::string path)
 }
 
 #define STATE_MENU 0
-#define STATE_GAMEPLAY 1
+#define STATE_BEGINGAME 1
+#define STATE_GAMEPLAY 2
 int main(int argc, char* args[])
 {
 	//Start up SDL and create window
@@ -223,18 +224,18 @@ int main(int argc, char* args[])
 		{
 			//Main loop flag
 			bool quit = false;
-			int state = STATE_GAMEPLAY;
-			Player p = Player(100, 100, 0);
-			std::vector<Player> others;
+			int state = STATE_BEGINGAME;
+			//Player p = Player(100, 100, 0);
+			//std::vector<Player> others;
 			if (argc == 2)
 			{
 				server_begin();
-				others.push_back(Player(100,100,0));	
+				//others.push_back(Player(100,100,0));	
 			}
 			if (argc == 3)
 			{
 				client_begin(args[2]);
-				others.push_back(Player(100,100,0));
+				//others.push_back(Player(100,100,0));
 			}
 			
 			glLoadIdentity();
@@ -246,6 +247,8 @@ int main(int argc, char* args[])
 			SDL_Event e;
 			frame = 0;
 			unsigned int endTime = SDL_GetTicks();
+
+			GameLogic g;
 			//While application is running
 			while (!quit)
 			{
@@ -266,9 +269,12 @@ int main(int argc, char* args[])
 				switch (state) {
 					case STATE_MENU: 
 						break;
+					case STATE_BEGINGAME:
+						g = GameLogic();
+						state = STATE_GAMEPLAY;//don't break, continue directly to gameplay
 					case STATE_GAMEPLAY: 
-						gameLogicLoop(&p, NULL, keyboard);
-						drawLoop(&p, NULL);
+						g.step(keyboard);
+						g.draw();
 						break;
 				}
 				//Update screen

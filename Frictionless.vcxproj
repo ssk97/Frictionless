@@ -129,6 +129,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="network.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RingMaster.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Exhaust.h" />
@@ -136,6 +137,7 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="network.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RingMaster.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
