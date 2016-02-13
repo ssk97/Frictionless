@@ -144,10 +144,6 @@ bool initGL()
         return false;
     }
 
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "Error initializing glew! %s\n" << error;
-        return false;
-    }
     glEnable(GL_MULTISAMPLE);
 
     return true;
@@ -341,10 +337,17 @@ int main(int argc, char* args[])
                         }
                         else {
                             if (g.rings.thisRing >= 10)
+			    {
                                 menu.draw_text(10, 10, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));
+				if (g.multiplayer) menu.draw_text(10, 30, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));
+			    }
                             else
+			    {
                                 menu.draw_text(10 + chrw, 10, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));
+                                if (g.multiplayer) menu.draw_text(10 + chrw, 30, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));				
+			    }
                             menu.draw_text(10 + 2 * chrw, 10, "/20");
+			    if (g.multiplayer) menu.draw_text(10 + 2 * chrw, 30, "/20");
                         }
                         break;
                     }

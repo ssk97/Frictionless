@@ -11,11 +11,11 @@ void send_packet(ActivePlayer* play);
 
 void server_stop();
 
-
 struct data_sent
 {
     double x, y, xspd, yspd, angle, aspd;
     Uint8 left_prev, right_prev, up_prev;
     uint32_t rng_seed;
+    Uint8 passed_rings;
 };
 
