@@ -43,6 +43,7 @@ void checkErrors()
 	}
 }
 
+unsigned long frame;
 bool init()
 {
 	//Initialization flag
@@ -231,7 +232,7 @@ int main(int argc, char* args[])
 			const Uint8 *keyboard = SDL_GetKeyboardState(NULL);
 			//Event handler
 			SDL_Event e;
-			unsigned int frame = 0;
+			frame = 0;
 			unsigned int endTime = SDL_GetTicks();
 			//While application is running
 			while (!quit)
