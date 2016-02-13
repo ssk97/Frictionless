@@ -19,19 +19,20 @@ int server()
 	if (SDLNet_UDP_Recv(socket, packet))
 	{
 	    //Stub.
-	    printf("We got a packet!]n");
+	    printf("We got a packet!\n");
+	    printf("%.*s\n", packet->len, packet->data);
 	}
     }
     return 0;
 }
 
-int sendPacket(IPaddress addr, Uint8* message, int messageLength, UDPsocket socket)
+
+
+int sendPacket(IPaddress addr, Uint8* message, int messageLength, UDPsocket socket, UDPpacket *p)
 {
-    printf("About to alloc.");
-    UDPpacket *p = SDLNet_AllocPacket(PACKET_SIZE);
     if (!p)
     {
-	printf("Could not allocate packet.\n");
+	printf("Invalid packet.\n");
 	return -1;
     }
     p->address.host = addr.host;
@@ -40,10 +41,7 @@ int sendPacket(IPaddress addr, Uint8* message, int messageLength, UDPsocket sock
     p->len = messageLength;
 
     int err = 0;
-    printf("About to send");
     if (SDLNet_UDP_Send(socket, -1, p) == 0) err = -1;
 
-    printf("About to free");
-    //SDLNet_FreePacket(p);
     return err;
 }

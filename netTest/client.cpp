@@ -15,6 +15,7 @@ int main(int argc, char* argv[])
     UDPsocket socket = SDLNet_UDP_Open(0);
     IPaddress serverAddr;
     SDLNet_ResolveHost(&serverAddr, argv[1], PORT_NUMBER);
-
-    return sendPacket(serverAddr, (Uint8 *)argv[2], strlen(argv[2]), socket);
+    UDPpacket *packet = SDLNet_AllocPacket(strlen(argv[2]));
+    
+    return sendPacket(serverAddr, (Uint8 *)argv[2], strlen(argv[2]), socket, packet);
 }

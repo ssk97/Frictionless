@@ -1,7 +1,7 @@
 SOURCES = network.cpp
 CC = g++
 LFLAGS = -L/usr/lib/x86_64-linux-gnu -lSDL2 -lSDL2_image -lSDL2_net
-CFLAGS = -Wall -O2 -I/usr/include/SDL2 -D_REENTRANT
+CFLAGS = -Wall -O2 -I/usr/include/SDL2 -D_REENTRANT -g
 
 all: server client
 
