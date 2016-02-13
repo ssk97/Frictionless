@@ -17,6 +17,7 @@ void GameLogic::step(const Uint8 *keyboard)
 	{
 	    p.step();
 	}
+	send_packet(&player);
 }
 
 void GameLogic::draw()

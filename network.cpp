@@ -70,10 +70,11 @@ void receive_packets()
     }
 }
 
-void send_packet()
+void send_packet(ActivePlayer* play)
 {
-    packet->data = (Uint8*) "ho";
-    packet->len = 10;
+    struct data_sent data = {play->x, play->y, play->xspd, play->yspd, play->angle, play->aspd, play->left_prev, play->right_prev, play->up_prev};
+    packet->data = (Uint8*) &data;
+    packet->len = sizeof(data);
     if (SDLNet_UDP_Send(socket, -1, packet) == 0)
     {
 	printf("Something went wrong. D:\n");
