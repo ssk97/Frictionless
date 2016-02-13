@@ -79,9 +79,7 @@ void draw_text(double x, double y, char* arr) {
         i++;
     }
 }
-bool bbox(double x, double y, double x1, double y1, double w, double h) {
-    return ((x >= x1 && x <= x1 + w) && (y >= y1 && y <= y1 + h));
-}
+
 int Menu::step(Sint32 mouseX, Sint32 mouseY, bool clicked, const Uint8 *keyboard, SDL_Scancode keypressed){//returns mode if changed, 0 if no change
     switch (substate) {
         case s_main:

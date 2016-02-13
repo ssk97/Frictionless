@@ -9,6 +9,9 @@ IPaddress client_begin(char*, uint32_t);
 int receive_packets(void* ignored);
 void send_packet(ActivePlayer* play);
 
+int server_stop();
+
+
 struct data_sent
 {
     double x, y, xspd, yspd, angle, aspd;

@@ -10,6 +10,14 @@ UDPpacket* read_packet;
 UDPpacket* write_packet;
 IPaddress addr;
 
+
+int server_stop()
+{
+    SDLNet_UDP_Close(socket);
+    SDLNet_FreePacket(read_packet);
+    SDLNet_FreePacket(write_packet);
+}
+
 //Returns 1 when a connection is made, 0 otherwise
 int server_begin(uint32_t* rng_seed, IPaddress* address)
 {
