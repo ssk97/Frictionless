@@ -1,5 +1,5 @@
-/*This source code copyrighted by Lazy Foo' Productions (2004-2015)
-and may not be redistributed without written permission.*/
+/*Much of the code in this file was originally from Lazy Foo' Productions
+(http://lazyfoo.net/)*/
 
 //Using SDL, SDL_image, standard IO, math, and strings
 #include <SDL.h>
@@ -7,10 +7,11 @@ and may not be redistributed without written permission.*/
 #include <stdio.h>
 #include <string>
 #include <cmath>
+#include <iostream>
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 1024;
+const int SCREEN_HEIGHT = 768;
 
 //Starts up SDL and creates window
 bool init();
@@ -154,10 +155,13 @@ int main(int argc, char* args[])
 
 			//Event handler
 			SDL_Event e;
-
+			unsigned int frame = 0;
 			//While application is running
 			while (!quit)
 			{
+				frame++;
+				unsigned int endTime = SDL_GetTicks()+17;
+				if (frame % 3 == 0) endTime--;
 				//Handle events on queue
 				while (SDL_PollEvent(&e) != 0)
 				{
@@ -195,6 +199,11 @@ int main(int argc, char* args[])
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);
+				if (SDL_GetTicks() < endTime) {
+					//Sleep the remaining frame time
+					SDL_Delay(endTime-SDL_GetTicks());
+				}
+				std::cout <<frame<<":"<< SDL_GetTicks()<<"\n";
 			}
 		}
 	}
