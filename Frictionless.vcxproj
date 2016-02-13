@@ -127,6 +127,7 @@
     <ClCompile Include="Exhaust.cpp" />
     <ClCompile Include="GameLogic.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="network.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RingMaster.cpp" />
@@ -135,6 +136,7 @@
     <ClInclude Include="Exhaust.h" />
     <ClInclude Include="GameLogic.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="network.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RingMaster.h" />

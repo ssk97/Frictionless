@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "GameLogic.h"
 #include "network.h"
+#include "Menu.h"
 #include <vector>
 //Starts up SDL and creates window
 bool init();
@@ -212,9 +213,6 @@ bool clicked;
 #define STATE_MENU 0
 #define STATE_BEGINGAME 1
 #define STATE_GAMEPLAY 2
-#define M_SINGLEPLAYER 0
-#define M_CLIENT 1
-#define M_SERVER 2
 #include <time.h>
 int main(int argc, char* args[])
 {
@@ -279,32 +277,15 @@ int main(int argc, char* args[])
                 if (keyboard[SDL_SCANCODE_ESCAPE]) {
                     quit = true;
                 }
+                Menu menu = Menu();
                 switch (state) {
-                    case STATE_MENU: 
-                        glEnable(GL_TEXTURE_2D);
-                        glColor3f(1.0f, 1.0f, 1.0f);
-                        glBegin(GL_QUADS);
-                        //glColor3d(1, 0, 0); 
-                        glTexCoord2f(0.0f, 1.0f);
-                        glVertex2f(172, 584);
-                        glTexCoord2f(1.0f, 1.0f);
-                        glVertex2f(812, 584);
-                        glTexCoord2f(1.0f, 0.0f);
-                        glVertex2f(812, 184);
-                        glTexCoord2f(0.0f, 0.0f);
-                        glVertex2f(172, 184);
-                        glEnd();
-                        glDisable(GL_TEXTURE_2D);
-                        if (clicked) {
-                            if (mouseY < 300)
-                                mode = M_SINGLEPLAYER;
-                            else if (mouseY > 450)
-                                mode = M_SERVER;
-                            else
-                                mode = M_CLIENT;
+                    case STATE_MENU:
+                        mode = menu.step( mouseX,  mouseY,  clicked);//returns mode if changed, 0 if no change
+                        if (mode != 0) {
                             std::cout << mode;
                             state = STATE_BEGINGAME;
                         }
+                        menu.draw( mouseX,  mouseY);
                     break;
                     case STATE_BEGINGAME:
                         rngGame.seed(time(NULL));
@@ -327,16 +308,16 @@ int main(int argc, char* args[])
                         g.step(keyboard);
                         g.draw();
                         break;
-                        }
-                        //Update screen
-                        SDL_GL_SwapWindow(gWindow);
-                        if (SDL_GetTicks() < endTime) {
-                            //Sleep the remaining frame time
-                            SDL_Delay(endTime-SDL_GetTicks());
-                        }
-                        else {
-                            //std::cout << SDL_GetTicks()-endTime << "\n";
                     }
+                //Update screen
+                SDL_GL_SwapWindow(gWindow);
+                if (SDL_GetTicks() < endTime) {
+                    //Sleep the remaining frame time
+                    SDL_Delay(endTime-SDL_GetTicks());
+                }
+                else {
+                    //std::cout << SDL_GetTicks()-endTime << "\n";
+                }
             }
         }
     }
