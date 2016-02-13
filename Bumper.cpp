@@ -20,10 +20,10 @@ int Bumper::calculateCollision(double playerX, double playerY)
     }
 }
 
-Bumper::draw()
+void Bumper::draw()
 {
     glPushMatrix();
-    dlColor3f(1.0f, 0.75f, .8f);
+    glColor3f(1.0f, 0.75f, .8f);
     glBegin(GL_QUADS);                      // Draw A Quad
     glVertex3f(x, y, 0.0f);              // Top Left
     glVertex3f(x, y + width, 0.0f);              // Top Right
