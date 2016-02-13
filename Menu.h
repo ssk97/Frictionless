@@ -5,6 +5,8 @@
 #define M_CLIENT 2
 #define M_SERVER 3
 
+#define s_main 1
+#define s_clientIP 2
 class Menu
 {
 public:
@@ -13,5 +15,7 @@ public:
     bool init();//load all the files into surfaces into openGL textures
     Menu();
     ~Menu();
+    int substate = s_main;
+    Uint64 tmpip;
 };
 
