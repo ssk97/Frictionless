@@ -168,6 +168,7 @@ int Menu::step(Sint32 mouseX, Sint32 mouseY, bool clicked, const Uint8 *keyboard
                 }
             }
             if (keypressed == SDL_SCANCODE_RETURN) {
+                substate = s_main;
                 return M_CLIENT;
             }
             break;
