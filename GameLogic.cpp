@@ -14,7 +14,6 @@ void GameLogic::step(const Uint8 *keyboard)
     player.left_btn = keyboard[SDL_SCANCODE_LEFT];
     player.up_btn = keyboard[SDL_SCANCODE_UP];
     player.step(&bumpers);
-    rings.step(player.x, player.y);
     SDL_LockMutex(write_other_players);
     for(auto &p : others)
     {
