@@ -71,7 +71,7 @@ IPaddress client_begin(char* hostname, uint32_t rng_seed)
     write_packet->address.host = addr.host;
     write_packet->address.port = PORT_NUMBER;
     //TODO: Transmit some real information over the wire.
-    struct data_sent data = {0, 0, 0, 0, 0, 0, 0, 0, 0, rng_seed};
+    struct data_sent data = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, rng_seed};
     write_packet->len = sizeof(data);
     write_packet->data = (Uint8*) &data;
     
@@ -89,33 +89,34 @@ int receive_packets(void* gameLogic)
     printf("Starting to recieve packets.\n");
     while(1)
     {
-    SDL_Delay(1);
-    int recv = SDLNet_UDP_Recv(socket, read_packet);
-    if (recv == -1)
-    {
-        printf("Broken: %s\n", SDLNet_GetError());
-        throw 999;
-    }
-    if (recv == 1)
-    {
-        struct data_sent *data = (struct data_sent*) read_packet->data;
-        GameLogic *g = (GameLogic*) gameLogic;
-        SDL_LockMutex(g->write_other_players);
-        for (auto &p : g->others)
-        {
-	    //Todo: Allow multiple other players
-	    p.x = data->x; p.y = data->y; p.xspd = data->xspd; p.yspd = data->yspd; p.angle = data->angle; p.aspd = data->aspd; p.left_btn = data->left_prev; p.right_btn = data->right_prev; p.up_btn = data->up_prev;
-        }
-        SDL_UnlockMutex(g->write_other_players);
-    }
+	SDL_Delay(1);
+	int recv = SDLNet_UDP_Recv(socket, read_packet);
+	if (recv == -1)
+	{
+	    printf("Broken: %s\n", SDLNet_GetError());
+	    throw 999;
+	}
+	if (recv == 1)
+	{
+	    struct data_sent *data = (struct data_sent*) read_packet->data;
+	    GameLogic *g = (GameLogic*) gameLogic;
+	    SDL_LockMutex(g->write_other_players);
+	    for (auto &p : g->others)
+	    {
+		//Todo: Allow multiple other players
+		p.x = data->x; p.y = data->y; p.xspd = data->xspd; p.yspd = data->yspd; p.angle = data->angle; p.aspd = data->aspd; p.left_btn = data->left_prev; p.right_btn = data->right_prev; p.up_btn = data->up_prev;
+		g->opponent_rings = data->passed_rings;
+	    }
+	    SDL_UnlockMutex(g->write_other_players);
+	}
     }
 }
 
-void send_packet(ActivePlayer* play)
+void send_packet(ActivePlayer* play, Uint8 flagsPassed)
 {
-    struct data_sent data = {play->x, play->y, play->xspd, play->yspd, play->angle, play->aspd, play->left_btn, play->right_btn, play->up_btn};
+    struct data_sent data = {play->x, play->y, play->xspd, play->yspd, play->angle, play->aspd, play->left_btn, play->right_btn, play->up_btn, flagsPassed};
     write_packet->data = (Uint8*) &data;
-    write_packet->len = 80;
+    write_packet->len = 90;
     if (SDLNet_UDP_Send(socket, -1, write_packet) == 0)
     {
 	printf("Something went wrong. D:\n");

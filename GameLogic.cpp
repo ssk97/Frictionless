@@ -24,7 +24,7 @@ void GameLogic::step(const Uint8 *keyboard)
 
     if (multiplayer && turns == 3)
     {
-        send_packet(&player);
+        send_packet(&player, rings.thisRing);
         turns = 0;
     }
     turns++;

@@ -339,12 +339,12 @@ int main(int argc, char* args[])
                             if (g.rings.thisRing >= 10)
 			    {
                                 menu.draw_text(10, 10, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));
-				if (g.multiplayer) menu.draw_text(10, 30, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));
+				if (g.multiplayer) menu.draw_text(10, 30, const_cast<char *>((std::to_string(g.opponent_rings)).c_str()));
 			    }
                             else
 			    {
                                 menu.draw_text(10 + chrw, 10, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));
-                                if (g.multiplayer) menu.draw_text(10 + chrw, 30, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));				
+                                if (g.multiplayer) menu.draw_text(10 + chrw, 30, const_cast<char *>((std::to_string(g.opponent_rings)).c_str()));				
 			    }
                             menu.draw_text(10 + 2 * chrw, 10, "/20");
 			    if (g.multiplayer) menu.draw_text(10 + 2 * chrw, 30, "/20");

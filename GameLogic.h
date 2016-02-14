@@ -20,6 +20,7 @@ public:
     SDL_mutex* write_other_players;
     int multiplayer = 0;
     int turns = 0;
+    Uint8 opponent_rings;
 
     int timeFlying = 0;
 };
