@@ -52,7 +52,6 @@ void GameLogic::draw()
     }
     if (multiplayer && opponent_rings < 20)
         rings.drawEnemy(opponent_rings);
-    rings.draw();
 
     //if (other != NULL) other->draw();
 }
