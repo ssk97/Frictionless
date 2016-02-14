@@ -49,7 +49,7 @@ void GameLogic::draw()
     }
     for (auto &b : bumpers)
     {
-	b.draw();
+	    b.draw();
     }        
     rings.draw();
 

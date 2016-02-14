@@ -332,7 +332,6 @@ int main(int argc, char* args[])
                                 state = STATE_MENU;
                                 if (mode == M_CLIENT || mode == M_SERVER)
                                     server_stop();
-                                //FREE STUFF
                             }
                         }
                         else {

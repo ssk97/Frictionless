@@ -23,32 +23,32 @@ int server_begin(uint32_t* rng_seed, IPaddress* address)
 {
     if (socket == NULL)
     {
-	socket = SDLNet_UDP_Open(PORT_NUMBER);
-	if (socket == NULL)
-	{
-	    printf("Could not open socket: %s\n", SDLNet_GetError());
-	    throw 8;
-	}
-	read_packet = SDLNet_AllocPacket(PACKET_SIZE);
-	write_packet = SDLNet_AllocPacket(PACKET_SIZE);
+	    socket = SDLNet_UDP_Open(PORT_NUMBER);
+	    if (socket == NULL)
+	    {
+	        printf("Could not open socket: %s\n", SDLNet_GetError());
+	        throw 8;
+	    }
+	    read_packet = SDLNet_AllocPacket(PACKET_SIZE);
+	    write_packet = SDLNet_AllocPacket(PACKET_SIZE);
     }
     
     if(SDLNet_UDP_Recv(socket,read_packet))
     {
-	printf("Got opening connection");
+	    printf("Got opening connection");
 
-	struct data_sent *data = (struct data_sent*) read_packet->data;
+	    struct data_sent *data = (struct data_sent*) read_packet->data;
 	    
-	addr = read_packet->address;
-	write_packet->address.host = read_packet->address.host;
-	write_packet->address.port = read_packet->address.port;
-	*rng_seed = data->rng_seed;
-	*address = read_packet->address;
-	return 1;
+	    addr = read_packet->address;
+	    write_packet->address.host = read_packet->address.host;
+	    write_packet->address.port = read_packet->address.port;
+	    *rng_seed = data->rng_seed;
+	    *address = read_packet->address;
+	    return 1;
     }
     else
     {
-	return 0;
+	    return 0;
     }
 }
 
@@ -57,16 +57,16 @@ IPaddress client_begin(char* hostname, uint32_t rng_seed)
     socket = SDLNet_UDP_Open(0);
     if (socket == NULL)
     {
-	printf("Could not open socket: %s\n", SDLNet_GetError());    
-	throw 445;
+	    printf("Could not open socket: %s\n", SDLNet_GetError());    
+	    throw 445;
     }
     SDLNet_ResolveHost(&addr, hostname, PORT_NUMBER);
     read_packet = SDLNet_AllocPacket(PACKET_SIZE);
     write_packet = SDLNet_AllocPacket(PACKET_SIZE);    
     if (!write_packet)
     {
-	printf("Invalid packet.\n");
-	throw 15;
+	    printf("Invalid packet.\n");
+	    throw 15;
     }
     write_packet->address.host = addr.host;
     write_packet->address.port = PORT_NUMBER;
@@ -77,8 +77,8 @@ IPaddress client_begin(char* hostname, uint32_t rng_seed)
     
     if (SDLNet_UDP_Send(socket, -1, write_packet) == 0)
     {
-	printf("Something went wrong: %s\n", SDLNet_GetError());
-	throw 4454;
+	    printf("Something went wrong: %s\n", SDLNet_GetError());
+	    throw 4454;
     }
     return write_packet->address;
 }
@@ -119,8 +119,8 @@ void send_packet(ActivePlayer* play, Uint8 flagsPassed)
     write_packet->len = 90;
     if (SDLNet_UDP_Send(socket, -1, write_packet) == 0)
     {
-	printf("Something went wrong. D:\n");
-	throw 44;
+	    printf("Something went wrong. D:\n");
+	    throw 44;
     }
-    return;    
+    return;
 }

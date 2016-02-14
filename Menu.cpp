@@ -168,7 +168,6 @@ int Menu::step(Sint32 mouseX, Sint32 mouseY, bool clicked, const Uint8 *keyboard
                     tmpip[--ippos] = 0;
                 }
             }
-            std::cout << tmpip << "\n";
             if (keypressed == SDL_SCANCODE_RETURN) {
                 return M_CLIENT;
             }

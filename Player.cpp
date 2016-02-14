@@ -16,17 +16,17 @@ double fRandGFX(double fMin, double fMax)
 void Player::step(std::vector<Bumper>* bumpers)
 {
     if (right_btn)
-	aspd += .15;
+	    aspd += .15;
     if (left_btn)
-	aspd -= .15;
+	    aspd -= .15;
     if (up_btn) {
-	xspd += xdir(angle, .05);
-	yspd += ydir(angle, .05);
-	myExhaust.add(x, y, xdir(angle,-5)+xspd, ydir(angle, -5)+yspd);
-	myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -4.8) + xspd, ydir(angle + fRandGFX(-20, 20), -4.8) + yspd);
-	myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -5.2) + xspd, ydir(angle + fRandGFX(-20, 20), -5.2) + yspd);
-	myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -4.8) + xspd, ydir(angle + fRandGFX(-20, 20), -4.8) + yspd);
-	myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -5.2) + xspd, ydir(angle + fRandGFX(-20, 20), -5.2) + yspd);
+	    xspd += xdir(angle, .05);
+	    yspd += ydir(angle, .05);
+	    myExhaust.add(x, y, xdir(angle,-5)+xspd, ydir(angle, -5)+yspd);
+	    myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -4.8) + xspd, ydir(angle + fRandGFX(-20, 20), -4.8) + yspd);
+	    myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -5.2) + xspd, ydir(angle + fRandGFX(-20, 20), -5.2) + yspd);
+	    myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -4.8) + xspd, ydir(angle + fRandGFX(-20, 20), -4.8) + yspd);
+	    myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -5.2) + xspd, ydir(angle + fRandGFX(-20, 20), -5.2) + yspd);
     }        
     x += xspd;
     y += yspd;
@@ -41,9 +41,9 @@ void Player::step(std::vector<Bumper>* bumpers)
     }
     for (auto &b : *bumpers)
     {
-	int colision = b.calculateCollision(x, y);
-	if (colision == BUMPER_X_COLLISION) xspd *= -1;
-	if (colision == BUMPER_Y_COLLISION) yspd *= -1;	
+	    int colision = b.calculateCollision(x, y);
+	    if (colision == BUMPER_X_COLLISION) xspd *= -1;
+	    if (colision == BUMPER_Y_COLLISION) yspd *= -1;	
     }
 
     myExhaust.step();
@@ -56,9 +56,9 @@ void Player::draw()
     glRotated(angle, 0, 0, 1);
 
     if (this->colorRed)
-	glColor3f(1.0f, 0.0f, 0.0f);
+	    glColor3f(1.0f, 0.0f, 0.0f);
     else
-	glColor3f(0.0f, 1.0f, 0.0f);
+	    glColor3f(0.0f, 1.0f, 0.0f);
     glBegin(GL_TRIANGLE_FAN);
         glVertex2f(0, 0);
         glVertex2f(15, -20);
