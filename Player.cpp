@@ -20,8 +20,8 @@ void Player::step(std::vector<Bumper>* bumpers)
     if (left_btn)
 	    aspd -= .15;
     if (up_btn) {
-	    xspd += xdir(angle, .05);
-	    yspd += ydir(angle, .05);
+	    xspd += xdir(angle, .05) * multiplier;
+	    yspd += ydir(angle, .05) * multiplier;
 	    myExhaust.add(x, y, xdir(angle,-5)+xspd, ydir(angle, -5)+yspd);
 	    myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -4.8) + xspd, ydir(angle + fRandGFX(-20, 20), -4.8) + yspd);
 	    myExhaust.add(x, y, xdir(angle + fRandGFX(-20, 20), -5.2) + xspd, ydir(angle + fRandGFX(-20, 20), -5.2) + yspd);

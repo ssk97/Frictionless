@@ -8,6 +8,7 @@ GameLogic::GameLogic() : player(100, 100, 0)
 GameLogic::~GameLogic()
 {
 }
+int buttonLast = 0;
 void GameLogic::step(const Uint8 *keyboard)
 {
     player.right_btn = keyboard[SDL_SCANCODE_RIGHT];
@@ -20,6 +21,9 @@ void GameLogic::step(const Uint8 *keyboard)
         p.step(&bumpers);
     }
     SDL_UnlockMutex(write_other_players);
+
+    if (keyboard[SDL_SCANCODE_F] && !buttonLast) player.multiplier *= 1.5;
+    buttonLast = keyboard[SDL_SCANCODE_F];
 
     if (multiplayer && turns == 3)
     {

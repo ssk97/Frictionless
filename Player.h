@@ -12,10 +12,11 @@ public:
     void step(std::vector<Bumper>* bumpers);
     void draw();
     double x, y, xspd, yspd, angle, aspd;
-    Uint8 left_btn, right_btn, up_btn;
+    double multiplier = 1;
+    Uint8 left_btn, right_btn, up_btn, special_btn;
     Exhaust myExhaust;
     int colorRed;
-
+    int special_timeout = 0;
 };
 
 class ActivePlayer : public Player
