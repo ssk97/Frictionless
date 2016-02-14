@@ -294,6 +294,7 @@ int main(int argc, char* args[])
 		            case STATE_WAIT_FOR_CLIENT:
 			            uint32_t rng_seed;
 			            IPaddress ip;
+                        glColor3f(1.0f, .4f, .9f);
                         menu.draw_text(80, 300, "Waiting for client");
                         menu.draw_text(180, 400, "to connect");
 			            if (server_begin(&rng_seed, &ip))
@@ -323,7 +324,13 @@ int main(int argc, char* args[])
                         g.step(keyboard);
                         g.draw();
                         if (g.rings.thisRing >= 20) {
-                            menu.draw_text(10, 10, "You won");
+                            g.haveWon = g.haveWon || ((g.multiplayer && g.opponent_rings < 20) || !g.multiplayer);
+                            glColor3f(1.0f, .4f, .9f);
+                            if (g.haveWon)
+                                menu.draw_text(10, 10, "You won");
+                            else
+                                menu.draw_text(10, 10, "You lost");
+
                             menu.draw_text(10, 110, "Time taken:");
                             menu.draw_text(10 + chrw * 11, 110, const_cast<char *>((std::to_string(g.timeFlying)).c_str()));
                             menu.draw_text(10, 200, "Press Enter to return");
@@ -335,14 +342,13 @@ int main(int argc, char* args[])
                             }
                         }
                         else {
+                            glColor3f(0.0f, 1.0f, 0.0f);
                             if (g.rings.thisRing >= 10)
-			    {
                                 menu.draw_text(10, 10, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));
-                            }
                             else
-                            {
                                 menu.draw_text(10 + chrw, 10, const_cast<char *>((std::to_string(g.rings.thisRing)).c_str()));
-                            }
+                            menu.draw_text(10 + 2 * chrw, 10, "/20");
+                            glColor3f(1.0f, 0.0f, 0.0f);
                             if (g.multiplayer)
                             {
                                 if (g.opponent_rings >= 10)
@@ -350,9 +356,8 @@ int main(int argc, char* args[])
                                 else
                                     menu.draw_text(10 + chrw, 30, const_cast<char *>((std::to_string(g.opponent_rings)).c_str()));
 
-				menu.draw_text(10 + 2 * chrw, 30, "/20");				
-			    }
-                            menu.draw_text(10 + 2 * chrw, 10, "/20");
+                                menu.draw_text(10 + 2 * chrw, 30, "/20");				
+                            }
                         }
                         break;
                     }

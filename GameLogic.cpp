@@ -50,7 +50,9 @@ void GameLogic::draw()
     for (auto &b : bumpers)
     {
 	    b.draw();
-    }        
+    }
+    if (multiplayer && opponent_rings < 20)
+        rings.drawEnemy(opponent_rings);
     rings.draw();
 
     //if (other != NULL) other->draw();

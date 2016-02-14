@@ -87,7 +87,6 @@ void Menu::draw_char(double x, double y, char c) {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glEnable(GL_TEXTURE_2D);
-        glColor3f(1.0f, 1.0f, 1.0f);
         glBegin(GL_QUADS);
         glTexCoord2f(charx, chary+texh);
         glVertex2f(x, y + chrh);
@@ -204,13 +203,17 @@ void Menu::draw(Sint32 mouseX, Sint32 mouseY) {
     switch (substate) {
         case s_main:
             draw_round_rect(100, 100, chrw * 13, chrh, mouseX, mouseY);
+            glColor3f(1.0f, .4f,.9f);
             draw_text(100, 100, "Single Player");
             draw_round_rect(100, 300, chrw * 11, chrh, mouseX, mouseY);
+            glColor3f(1.0f, .4f, .9f);
             draw_text(100, 300, "Client Game");
             draw_round_rect(100, 500, chrw * 11, chrh, mouseX, mouseY);
+            glColor3f(1.0f, .4f, .9f);
             draw_text(100, 500, "Server Game");
             break;
         case s_clientIP:
+            glColor3f(1.0f, .4f, .9f);
             draw_text(100, 300, "IP address:");
             draw_text(100, 400, tmpip);
     }

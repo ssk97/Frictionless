@@ -95,3 +95,48 @@ void RingMaster::draw()
     }
     glDisable(GL_BLEND);
 }
+void drawEnemyRing(double x, double y, double size1, double size2, double size3, float color)
+{
+    glBegin(GL_TRIANGLE_STRIP);
+    for (int i = 0; i <= 36; i++) {
+        glColor3f(0.0f, 0.0f, 0.0f); //pulsing red
+        glVertex2f(x + xdir(i * 10, size1), y + ydir(i * 10, size1));
+        glColor3f(color, color, 0.0f);
+        glVertex2f(x + xdir(i * 10, size2), y + ydir(i * 10, size2));
+    }
+    glEnd();//ring inward
+
+    glBegin(GL_TRIANGLE_STRIP);
+    for (int i = 0; i <= 36; i++) {
+        glColor3f(0.0f, 0.0f, 0.0f); //pulsing red
+        glVertex2f(x + xdir(i * 10, size3), y + ydir(i * 10, size3));
+        glColor3f(color, color, 0.0f);
+        glVertex2f(x + xdir(i * 10, size2), y + ydir(i * 10, size2));
+    }
+    glEnd();//ring outward
+}
+void RingMaster::drawEnemy(int pos)//position of enemy
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    double x = rings[pos].x, y = rings[pos].y;
+    drawEnemyRing(x, y, 15 + xdir(frame * 4, -5), 30, 45 + xdir(frame * 4, 5), .4);
+
+    if (pos < 19) {
+        drawEnemyRing(rings[pos + 1].x, rings[pos + 1].y, 15, 30, 45, .2);
+
+        glBegin(GL_LINE_STRIP);
+        glColor3f(.6, .6, 0);
+        glVertex2f(x, y);
+        glColor3f(.3, .3, 0);
+        glVertex2f(rings[pos + 1].x, rings[pos + 1].y);
+        if (pos < 18) {
+            glColor3f(.3, .3, 0);
+            glVertex2f(rings[pos + 1].x, rings[pos + 1].y);
+            glColor3f(0, 0, 0);
+            glVertex2f(rings[pos + 2].x, rings[pos + 2].y);
+        }
+        glEnd();
+    }
+    glDisable(GL_BLEND);
+}

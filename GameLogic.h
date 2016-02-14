@@ -21,6 +21,7 @@ public:
     int multiplayer = 0;
     int turns = 0;
     Uint8 opponent_rings;
+    bool haveWon = false;
 
     int timeFlying = 0;
 };
